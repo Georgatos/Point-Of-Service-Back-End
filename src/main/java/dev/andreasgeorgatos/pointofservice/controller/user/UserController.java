@@ -1,12 +1,11 @@
 package dev.andreasgeorgatos.pointofservice.controller.user;
 
+import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
 import dev.andreasgeorgatos.pointofservice.model.user.User;
 import dev.andreasgeorgatos.pointofservice.service.user.TsilikosUserDetails;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;
 import jakarta.annotation.Nullable;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -14,10 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Map;
@@ -69,14 +66,14 @@ public class UserController {
 
     }
 
-    @CrossOrigin(origins = "http://localhost:63342")
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
-        return userService.registerUser(user);
+
+        return userService.registerUser(userDTO);
     }
 
     @PutMapping("/{id}")

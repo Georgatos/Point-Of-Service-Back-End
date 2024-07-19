@@ -1,5 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.service.user;
 
+import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.SecurityConfig;
 import dev.andreasgeorgatos.pointofservice.model.address.Address;
 import dev.andreasgeorgatos.pointofservice.model.rewards.MembershipCard;
@@ -20,10 +21,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,15 +33,17 @@ public class UserService implements UserDetailsService {
     private final MembershipCardRepository membershipCardRepository;
     private final AddressRepository addressRepository;
     private final EmailService emailService;
+    private final AddressService addressService;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserTypeRepository userTypeRepository, SecurityConfig securityConfig, MembershipCardRepository membershipCardRepository, AddressRepository addressRepository, EmailService emailService) {
+    public UserService(UserRepository userRepository, UserTypeRepository userTypeRepository, SecurityConfig securityConfig, MembershipCardRepository membershipCardRepository, AddressRepository addressRepository, EmailService emailService, AddressService addressService) {
         this.userRepository = userRepository;
         this.userTypeRepository = userTypeRepository;
         this.securityConfig = securityConfig;
         this.membershipCardRepository = membershipCardRepository;
         this.addressRepository = addressRepository;
         this.emailService = emailService;
+        this.addressService = addressService;
     }
 
     @Override
@@ -105,45 +105,59 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity<User> registerUser(User user) {
-        if (user == null || userRepository.findUserByEmail(user.getEmail()).isPresent()) {
+    public ResponseEntity<?> registerUser(UserDTO userDTO) {
+
+        if (userDTO == null || userRepository.findUserByEmail(userDTO.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
         Optional<UserType> userType = userTypeRepository.findById(1L);
 
-        Optional<MembershipCard> optionalMembershipCard = membershipCardRepository.findById(user.getMembershipCard().getId());
-
-        Optional<List<Address>> optionalAddress = Optional.of(user.getAddress().stream()
-                .map(address -> addressRepository.findById(address.getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList()));
-
         if (userType.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The user type is empty, please specify.");
         }
 
-        if (optionalAddress.get().isEmpty()) {
-            user.setAddress(null);
-        } else {
-            user.setAddress(optionalAddress.get());
+        Optional<MembershipCard> optionalMembershipCard = membershipCardRepository.findById(1L);
+
+        MembershipCard membershipCard = null;
+        if (!optionalMembershipCard.isEmpty()) {
+            membershipCard = optionalMembershipCard.get();
         }
 
-        if (optionalMembershipCard.isEmpty()) {
-            user.setMembershipCard(null);
-        } else {
-            user.setMembershipCard(optionalMembershipCard.get());
+        Address address = addressService.createAddress(new Address(
+                userDTO.getCity(),
+                userDTO.getAddress(),
+                userDTO.getAddressNumber(),
+                userDTO.getPostalCode(),
+                userDTO.getStoryLevel(),
+                userDTO.getDoorRingBellName()
+        )).getBody();
+
+        if (address == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The address is empty, please specify.: " + address);
         }
 
-        user.setUserType(userType.get());
-        user.setPassword(securityConfig.delegatingPasswordEncoder().encode(user.getPassword()));
+        String verificationToken = generateVerificationToken();
 
-        userRepository.save(user);
 
-        emailService.sendEmail(user.getEmail(), "Test", "Test");
+        User newUser = new User();
 
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+
+        newUser.setFirstName(userDTO.getFirstName());
+        newUser.setLastName(userDTO.getLastName());
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setBirthDate(userDTO.getBirthDate());
+        newUser.setPhoneNumber(userDTO.getPhoneNumber());
+        newUser.setAddress(address);
+        newUser.setMembershipCard(membershipCard);
+        newUser.setUserType(userType.get());
+        newUser.setPassword(securityConfig.delegatingPasswordEncoder().encode(userDTO.getPassword()));
+        newUser.setVerified(false);
+        newUser.setVerificationToken(verificationToken);
+
+        userRepository.save(newUser);
+
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @Transactional
@@ -175,5 +189,9 @@ public class UserService implements UserDetailsService {
         oldUser.setLastName(editedUser.getLastName());
 
         return ResponseEntity.ok(oldUser);
+    }
+
+    private String generateVerificationToken() {
+        return UUID.randomUUID() + String.valueOf(new Date().toInstant().toEpochMilli());
     }
 }

@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,7 +41,7 @@ public class User {
     private String verificationToken;
 
     @Column(name = "verified", nullable = false)
-    @NotBlank(message = "The user can be either verified or not, not null.")
+    @NotNull(message = "The user can be either verified or not, not null.")
     private boolean verified;
 
     @Column(name = "password", nullable = false, length = 256)
@@ -60,10 +59,11 @@ public class User {
     @NotBlank(message = "The phone number can't be left blank.")
     private String phoneNumber;
 
-    @ManyToMany
+
     @JoinColumn(name = "address_id")
     @NotNull(message = "The address_id is a foreign key and it can't be null.")
-    private List<Address> address;
+    @ManyToOne
+    private Address address;
 
     @ManyToMany
     @JoinColumn(name = "order_id")
