@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,35 +26,43 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "user_type_id", nullable = false)
-    @NotNull(message = "You can't have a blank foreign key for the type of user.")
+    @NotNull(message = "The user_type_id is a foreign key and it can't be null.")
     private UserType userType;
 
     @Column(name = "first_name", nullable = false, length = 20)
-    @NotBlank(message = "Please add your first name.")
+    @NotBlank(message = "The first name can't be null.")
     private String firstName;
 
     @Column(name = "last_name", nullable = false, length = 20)
-    @NotBlank(message = "Please add your last name.")
+    @NotBlank(message = "The last name can't be null.")
     private String lastName;
+
+    @Column(name = "verification_token", nullable = false, length = 55)
+    @NotBlank(message = "The verification token can't be null.")
+    private String verificationToken;
+
+    @Column(name = "verified", nullable = false)
+    @NotBlank(message = "The user can be either verified or not, not null.")
+    private boolean verified;
 
     @Column(name = "password", nullable = false, length = 256)
     @Size(min = 6, message = "The password must have at least 6 characters, numbers or symbols.")
-    @NotNull(message = "Please add a password.")
+    @NotNull(message = "The password can't be null.")
     private String password;
 
     @Column(name = "email", nullable = false, length = 200, unique = true)
     @Email(message = "That's not a valid e-mail address, please make sure the syntax is correct.")
-    @NotBlank(message = "Please fill your e-mail.")
+    @NotBlank(message = "The e-mail can't be left blank.")
     private String email;
 
     @Column(name = "phone_number", nullable = false, length = 10)
     @Size(min = 10, max = 10, message = "The phone number must have exactly 9 digits.")
-    @NotBlank(message = "Please fill your phone number.")
+    @NotBlank(message = "The phone number can't be left blank.")
     private String phoneNumber;
 
     @ManyToMany
     @JoinColumn(name = "address_id")
-    @NotNull(message = "You can't have a blank foreign key for the address.")
+    @NotNull(message = "The address_id is a foreign key and it can't be null.")
     private List<Address> address;
 
     @ManyToMany
