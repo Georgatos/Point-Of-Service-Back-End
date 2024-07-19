@@ -1,6 +1,7 @@
 package dev.andreasgeorgatos.pointofservice.controller.user;
 
 import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
+import dev.andreasgeorgatos.pointofservice.DTO.VerificationEmail;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
 import dev.andreasgeorgatos.pointofservice.model.user.User;
 import dev.andreasgeorgatos.pointofservice.service.user.TsilikosUserDetails;
@@ -74,6 +75,16 @@ public class UserController {
         }
 
         return userService.registerUser(userDTO);
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationEmail verificationEmail, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        return userService.verifyEmail(verificationEmail.getEmail(), verificationEmail.getVerificationCode());
     }
 
     @PutMapping("/{id}")

@@ -21,6 +21,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -124,14 +126,7 @@ public class UserService implements UserDetailsService {
             membershipCard = optionalMembershipCard.get();
         }
 
-        Address address = addressService.createAddress(new Address(
-                userDTO.getCity(),
-                userDTO.getAddress(),
-                userDTO.getAddressNumber(),
-                userDTO.getPostalCode(),
-                userDTO.getStoryLevel(),
-                userDTO.getDoorRingBellName()
-        )).getBody();
+        Address address = addressService.createAddress(new Address(userDTO.getCity(), userDTO.getAddress(), userDTO.getAddressNumber(), userDTO.getPostalCode(), userDTO.getStoryLevel(), userDTO.getDoorRingBellName())).getBody();
 
         if (address == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The address is empty, please specify.: " + address);
@@ -139,9 +134,7 @@ public class UserService implements UserDetailsService {
 
         String verificationToken = generateVerificationToken();
 
-
         User newUser = new User();
-
 
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
@@ -156,8 +149,39 @@ public class UserService implements UserDetailsService {
         newUser.setVerificationToken(verificationToken);
 
         userRepository.save(newUser);
+        emailService.sendRegistrationEmail(newUser.getEmail(), verificationToken);
 
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    @Transactional
+    public ResponseEntity<?> verifyEmail(String email, String verificationCode) {
+        if (email == null || email.isEmpty() || verificationCode == null || verificationCode.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        User user = optionalUser.get();
+        if (!user.getVerificationToken().substring(0, 36).equals(verificationCode)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Date emailSentDate = Date.from(Instant.ofEpochMilli(Long.parseLong(user.getVerificationToken().substring(36))));
+
+        Instant tokenInstantTime = emailSentDate.toInstant().plus(5, ChronoUnit.MINUTES);
+
+        if (tokenInstantTime.isBefore(Instant.now())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        user.setVerified(true);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @Transactional

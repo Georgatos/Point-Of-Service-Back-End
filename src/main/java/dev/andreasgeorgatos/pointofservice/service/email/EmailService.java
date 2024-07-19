@@ -19,12 +19,12 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendEmail(String to, String subject, String body) {
+    public void sendRegistrationEmail(String to, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
+        message.setSubject("Verification email");
+        message.setText("Your token to verify your e-mail address and your account is: " + token.substring(0, 36));
 
         javaMailSender.send(message);
     }
