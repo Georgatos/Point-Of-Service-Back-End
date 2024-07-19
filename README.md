@@ -1,2 +1,2 @@
-# Tsilikos
-API for the Tsilikos restaurant in Greece, Argostoli. 
+# PointOfService
+A Point of Service API for restaurants.
