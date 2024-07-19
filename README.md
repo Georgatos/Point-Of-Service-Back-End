@@ -1,2 +1,2 @@
-# Tsilikos
-API for the Tsilikos restaurant in Greece, Argostoli. 
+#POS Restaurant
+A POS work in progress.
