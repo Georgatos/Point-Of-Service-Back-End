@@ -1,16 +1,15 @@
 package dev.andreasgeorgatos.pointofservice.controller.user;
 
+import dev.andreasgeorgatos.pointofservice.DTO.CredentialsDTO;
 import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
-import dev.andreasgeorgatos.pointofservice.DTO.VerificationEmail;
+import dev.andreasgeorgatos.pointofservice.DTO.VerificationCodeDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
 import dev.andreasgeorgatos.pointofservice.model.user.User;
 import dev.andreasgeorgatos.pointofservice.service.user.TsilikosUserDetails;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,26 +39,25 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        ResponseEntity<HttpStatus> build = validateUser(id);
-        if (build != null) {
-            return build;
+        if (!isUserValid(id)) {
+            return ResponseEntity.badRequest().body("Not the same users.");
         }
-        return ResponseEntity.status(401).build();
+
+        return userService.getUserById(id);
     }
 
-    @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody UserCredentials userCredentials, BindingResult bindingResult) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody CredentialsDTO credentialsDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
 
-        if (!userService.loginUser(userCredentials.getEmail(), userCredentials.getPassword())) {
+        if (!userService.loginUser(credentialsDTO.getEmail(), credentialsDTO.getPassword())) {
             return ResponseEntity.notFound().build();
         }
 
-        TsilikosUserDetails foundUser = (TsilikosUserDetails) userService.loadUserByUsername(userCredentials.getEmail());
+        TsilikosUserDetails foundUser = (TsilikosUserDetails) userService.loadUserByUsername(credentialsDTO.getEmail());
         Map<String, Object> claims = userService.getClaims(foundUser);
         String jwe = jwtUtil.generateJWE(foundUser.getUser().getEmail(), claims);
 
@@ -78,7 +76,7 @@ public class UserController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationEmail verificationEmail, BindingResult bindingResult) {
+    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationCodeDTO verificationEmail, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
@@ -89,18 +87,16 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editUserById(@Valid @PathVariable Long id, @RequestBody User user) {
-        ResponseEntity<HttpStatus> build = validateUser(id);
-        if (build != null) {
-            return build;
+        if (!isUserValid(id)) {
+            return ResponseEntity.badRequest().body("Not the same users.");
         }
         return userService.editUserById(id, user);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@Valid @PathVariable Long id) {
-        ResponseEntity<HttpStatus> build = validateUser(id);
-        if (build != null) {
-            return build;
+        if (!isUserValid(id)) {
+            return ResponseEntity.badRequest().body("Not the same users.");
         }
 
         userService.deleteUser(id);
@@ -108,34 +104,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    private @Nullable ResponseEntity<HttpStatus> validateUser(Long id) {
+    private boolean isUserValid(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getPrincipal() == null) {
-            return ResponseEntity.status(401).build();
-        }
-        if (!userService.isSameUser(authentication.getPrincipal().toString(), id)) {
-            return ResponseEntity.status(401).build();
-        }
-        return null;
-    }
-
-    public static class UserCredentials {
-
-        String email;
-        String password;
-
-        public UserCredentials(String email, String password) {
-            this.email = email;
-            this.password = password;
+            return false;
         }
 
-        public String getEmail() {
-            return email;
-        }
-
-        public String getPassword() {
-            return password;
-        }
+        return userService.isSameUser(authentication.getPrincipal().toString(), id);
     }
 }

@@ -1,6 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.DTO;
 
-public class VerificationEmail {
+public class VerificationCodeDTO {
     private String email;
     private String verificationCode;
 
