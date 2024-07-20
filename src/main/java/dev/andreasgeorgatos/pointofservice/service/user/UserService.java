@@ -48,6 +48,31 @@ public class UserService implements UserDetailsService {
         this.addressService = addressService;
     }
 
+    public ResponseEntity<?> getUserDTO(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setPassword("This is classified information.");
+        userDTO.setEmail(user.getEmail());
+        userDTO.setCity(user.getAddress().getCity());
+        userDTO.setAddress(user.getAddress().getAddress());
+        userDTO.setPostalCode(user.getAddress().getPostalCode());
+        userDTO.setDoorRingBellName(user.getAddress().getPostalCode());
+        userDTO.setAddressNumber(user.getAddress().getAddressNumber());
+        userDTO.setStoryLevel(user.getAddress().getStoryLevel());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+        userDTO.setBirthDate(user.getBirthDate());
+
+        return ResponseEntity.ok(userDTO);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
@@ -90,12 +115,6 @@ public class UserService implements UserDetailsService {
         }
 
         return ResponseEntity.ok(users);
-    }
-
-    public ResponseEntity<User> getUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     public boolean loginUser(String email, String password) {
