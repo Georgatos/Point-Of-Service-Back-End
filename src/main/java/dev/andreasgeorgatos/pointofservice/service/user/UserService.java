@@ -216,22 +216,30 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity<User> editUserById(Long id, User editedUser) {
+    public ResponseEntity<?> editUserDtoById(Long id, UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        User oldUser = optionalUser.get();
+        User user = optionalUser.get();
 
-        oldUser.setUserType(editedUser.getUserType());
-        oldUser.setPhoneNumber(editedUser.getPhoneNumber());
-        oldUser.setPassword(securityConfig.delegatingPasswordEncoder().encode(editedUser.getPassword()));
-        oldUser.setFirstName(editedUser.getFirstName());
-        oldUser.setLastName(editedUser.getLastName());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setPassword(userDTO.getPassword());
+        user.setEmail(userDTO.getEmail());
+        user.getAddress().setAddress(userDTO.getAddress());
+        user.getAddress().setCity(userDTO.getCity());
+        user.getAddress().setPostalCode(userDTO.getPostalCode());
+        user.getAddress().setDoorRingBellName(userDTO.getDoorRingBellName());
+        user.setPhoneNumber(user.getPhoneNumber());
 
-        return ResponseEntity.ok(oldUser);
+        user.getAddress().setAddressNumber(userDTO.getAddressNumber());
+        user.getAddress().setStoryLevel(userDTO.getStoryLevel());
+
+
+        return ResponseEntity.ok(userDTO);
     }
 
     private String generateVerificationToken() {

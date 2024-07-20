@@ -87,11 +87,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editUserById(@Valid @PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<?> editUserById(@Valid @PathVariable Long id, @RequestBody UserDTO userDTO) {
         if (!isUserValid(id)) {
             return ResponseEntity.badRequest().body("Not the same users.");
         }
-        return userService.editUserById(id, user);
+        return userService.editUserDtoById(id, userDTO);
     }
 
     @DeleteMapping("/{id}")
