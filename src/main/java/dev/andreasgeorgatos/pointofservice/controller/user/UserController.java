@@ -33,11 +33,6 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
-    @GetMapping()
-    public ResponseEntity<?> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         if (!isUserValid(id)) {

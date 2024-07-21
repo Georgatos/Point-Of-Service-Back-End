@@ -107,16 +107,6 @@ public class UserService implements UserDetailsService {
         return claims;
     }
 
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-
-        if (users.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(users);
-    }
-
     public boolean loginUser(String email, String password) {
         if (userRepository.findUserByEmail(email).isEmpty()) {
             return false;
