@@ -1,7 +1,7 @@
-package dev.andreasgeorgatos.pointofservice.controller.food;
+package dev.andreasgeorgatos.pointofservice.controller.item;
 
-import dev.andreasgeorgatos.pointofservice.model.food.Item;
-import dev.andreasgeorgatos.pointofservice.service.food.ItemService;
+import dev.andreasgeorgatos.pointofservice.model.item.Item;
+import dev.andreasgeorgatos.pointofservice.service.item.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

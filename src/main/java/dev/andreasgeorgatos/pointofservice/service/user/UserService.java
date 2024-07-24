@@ -189,6 +189,7 @@ public class UserService implements UserDetailsService {
 
         user.setVerified(true);
         userRepository.save(user);
+        emailService.sendSuccessfulVerificationEmail(user.getEmail());
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

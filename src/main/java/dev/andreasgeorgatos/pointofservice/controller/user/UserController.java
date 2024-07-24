@@ -4,8 +4,6 @@ import dev.andreasgeorgatos.pointofservice.DTO.CredentialsDTO;
 import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
 import dev.andreasgeorgatos.pointofservice.DTO.VerificationCodeDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
-import dev.andreasgeorgatos.pointofservice.model.user.User;
-import dev.andreasgeorgatos.pointofservice.repository.users.UserRepository;
 import dev.andreasgeorgatos.pointofservice.service.user.TsilikosUserDetails;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;
 import jakarta.validation.Valid;
@@ -61,6 +59,7 @@ public class UserController {
 
     }
 
+    @CrossOrigin
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

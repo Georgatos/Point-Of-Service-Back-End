@@ -1,4 +1,4 @@
-package dev.andreasgeorgatos.pointofservice.model.food;
+package dev.andreasgeorgatos.pointofservice.model.item;
 
 import dev.andreasgeorgatos.pointofservice.enums.Allergenes;
 import dev.andreasgeorgatos.pointofservice.enums.CategoryType;
@@ -29,7 +29,7 @@ public class Item {
     @Column(name = "item_description", nullable = false, length = 300)
     private String itemDescription;
 
-    @Column(name = "allergenes", nullable = true, length = 500)
+    @Column(name = "allergenes", length = 500)
     private Set<Allergenes> allergenes;
 
     @Column(name = "item_price", nullable = false, precision = 2)

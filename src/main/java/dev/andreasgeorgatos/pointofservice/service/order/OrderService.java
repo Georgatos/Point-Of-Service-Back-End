@@ -1,6 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.service.order;
 
-import dev.andreasgeorgatos.pointofservice.model.food.Item;
+import dev.andreasgeorgatos.pointofservice.model.item.Item;
 import dev.andreasgeorgatos.pointofservice.model.order.Order;
 import dev.andreasgeorgatos.pointofservice.model.order.OrderStatuses;
 import dev.andreasgeorgatos.pointofservice.model.order.OrderType;

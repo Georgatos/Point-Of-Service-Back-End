@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(HttpMethod.OPTIONS).permitAll();
                     auth.requestMatchers("/api/v1/user-type").denyAll();
+
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/login").permitAll();
@@ -56,7 +57,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/item").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/{id}").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/item").hasAnyAuthority("Manager", "Admin");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/item/{id}").hasAnyAuthority("Manager", "Admin");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/item/{id}").hasAnyAuthority("Manager", "Admin");

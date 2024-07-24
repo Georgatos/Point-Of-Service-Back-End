@@ -28,4 +28,14 @@ public class EmailService {
 
         javaMailSender.send(message);
     }
+
+    public void sendSuccessfulVerificationEmail(String to) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(to);
+
+        message.setSubject("Successfully verified your e-mail");
+        message.setText("This e-mail is for the purpose of notifying you that your account has been verified and you can now use all the features of the API and its apps, based on your authority levels");
+        javaMailSender.send(message);
+    }
 }

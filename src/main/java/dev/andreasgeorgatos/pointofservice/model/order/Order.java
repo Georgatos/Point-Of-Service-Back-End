@@ -1,6 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.model.order;
 
-import dev.andreasgeorgatos.pointofservice.model.food.Item;
+import dev.andreasgeorgatos.pointofservice.model.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;

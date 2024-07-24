@@ -1,6 +1,6 @@
-package dev.andreasgeorgatos.pointofservice.service.food;
+package dev.andreasgeorgatos.pointofservice.service.item;
 
-import dev.andreasgeorgatos.pointofservice.model.food.Item;
+import dev.andreasgeorgatos.pointofservice.model.item.Item;
 import dev.andreasgeorgatos.pointofservice.repository.food.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
