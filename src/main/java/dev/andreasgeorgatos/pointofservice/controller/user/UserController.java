@@ -70,14 +70,24 @@ public class UserController {
         return userService.registerUser(userDTO);
     }
 
-    @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationCodeDTO verificationEmail, BindingResult bindingResult) {
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody String email, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
 
-        return userService.verifyEmail(verificationEmail.getEmail(), verificationEmail.getVerificationCode());
+        return userService.resetPassword(email);
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationCodeDTO verificationCode, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        return userService.verifyEmail(verificationCode.getEmail(), verificationCode.getVerificationCode());
     }
 
     @PutMapping("/{id}")

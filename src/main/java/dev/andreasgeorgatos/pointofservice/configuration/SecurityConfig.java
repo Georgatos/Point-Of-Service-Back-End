@@ -21,10 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +39,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> {
+        return http.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(auth -> {
                     auth.requestMatchers(HttpMethod.OPTIONS).permitAll();
                     auth.requestMatchers("/api/v1/user-type").denyAll();
 
@@ -158,9 +152,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/membership-card").hasAnyAuthority("User", "Employee", "Manager", "Admin");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/membership-card/{id}").hasAnyAuthority("Manager", "Admin");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/membership-card/{id}").hasAnyAuthority("Manager", "Admin");
-                })
-                .addFilterBefore(new TokenExtractionFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults())
+                }).addFilterBefore(new TokenExtractionFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class).httpBasic(Customizer.withDefaults())
 
                 .build();
     }

@@ -117,7 +117,6 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public ResponseEntity<?> registerUser(UserDTO userDTO) {
-
         if (userDTO == null || userRepository.findUserByEmail(userDTO.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -161,6 +160,22 @@ public class UserService implements UserDetailsService {
         emailService.sendRegistrationEmail(newUser.getEmail(), verificationToken);
 
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<?> resetPassword(String email) {
+        if (email == null || email.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        emailService.sendResetEmailLink(email);
+
+        return ResponseEntity.ok().build();
     }
 
     @Transactional

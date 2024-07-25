@@ -38,4 +38,14 @@ public class EmailService {
         message.setText("This e-mail is for the purpose of notifying you that your account has been verified and you can now use all the features of the API and its apps, based on your authority levels");
         javaMailSender.send(message);
     }
+
+    public void sendResetEmailLink(String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(email);
+
+        message.setSubject("Reset your password");
+        message.setText("You are getting this e-mail because someone has requested a reset password, if you are not one who have requested it, please take the appropriate measures");
+        javaMailSender.send(message);
+    }
 }
