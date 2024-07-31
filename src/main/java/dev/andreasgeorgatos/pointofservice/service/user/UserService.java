@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
 
         User user = userOptional.get();
 
-        return new TsilikosUserDetails(user);
+        return new POSUser(user);
     }
 
     public boolean isSameUser(String principal, long id) {
@@ -96,7 +96,7 @@ public class UserService implements UserDetailsService {
         return user.getId() == id;
     }
 
-    public Map<String, Object> getClaims(TsilikosUserDetails userDetails) {
+    public Map<String, Object> getClaims(POSUser userDetails) {
 
         Map<String, Object> claims = new HashMap<>();
 

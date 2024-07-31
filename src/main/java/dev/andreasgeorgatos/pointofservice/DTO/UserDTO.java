@@ -1,5 +1,7 @@
 package dev.andreasgeorgatos.pointofservice.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 
 public class UserDTO {
@@ -16,6 +18,7 @@ public class UserDTO {
     private long addressNumber;
     private long storyLevel;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     public String getFirstName() {

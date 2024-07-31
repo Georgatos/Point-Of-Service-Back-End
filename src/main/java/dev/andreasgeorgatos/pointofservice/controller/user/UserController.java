@@ -4,11 +4,13 @@ import dev.andreasgeorgatos.pointofservice.DTO.CredentialsDTO;
 import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
 import dev.andreasgeorgatos.pointofservice.DTO.VerificationCodeDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
-import dev.andreasgeorgatos.pointofservice.service.user.TsilikosUserDetails;
+import dev.andreasgeorgatos.pointofservice.model.user.User;
+import dev.andreasgeorgatos.pointofservice.service.user.POSUser;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,7 +53,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        TsilikosUserDetails foundUser = (TsilikosUserDetails) userService.loadUserByUsername(credentialsDTO.getEmail());
+        POSUser foundUser = (POSUser) userService.loadUserByUsername(credentialsDTO.getEmail());
         Map<String, Object> claims = userService.getClaims(foundUser);
         String jwe = jwtUtil.generateJWE(foundUser.getUser().getEmail(), claims);
 
@@ -67,7 +69,17 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        return userService.registerUser(userDTO);
+
+        if (userService.registerUser(userDTO).getStatusCode() != HttpStatus.CREATED){
+            return ResponseEntity.badRequest().body("Failed to create the user.");
+        }
+
+        POSUser foundUser = (POSUser) userService.loadUserByUsername(userDTO.getEmail());
+
+        Map<String, Object> claims = userService.getClaims(foundUser);
+        String jwe = jwtUtil.generateJWE(userDTO.getEmail(), claims);
+        return ResponseEntity.ok().header("Authorization", "Bearer " + jwe).build();
+
     }
 
     @PostMapping("/resetPassword")
