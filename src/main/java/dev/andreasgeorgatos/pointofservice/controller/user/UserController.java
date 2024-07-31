@@ -78,8 +78,8 @@ public class UserController {
 
         Map<String, Object> claims = userService.getClaims(foundUser);
         String jwe = jwtUtil.generateJWE(userDTO.getEmail(), claims);
-        return ResponseEntity.ok().header("Authorization", "Bearer " + jwe).build();
 
+        return ResponseEntity.ok().header("Authorization", "Bearer " + jwe).body(userDTO);
     }
 
     @PostMapping("/resetPassword")

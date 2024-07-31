@@ -36,8 +36,7 @@ public class User {
     @NotBlank(message = "The last name can't be null.")
     private String lastName;
 
-    @Column(name = "verification_token", nullable = false, length = 55)
-    @NotBlank(message = "The verification token can't be null.")
+    @Column(name = "verification_token", length = 55)
     private String verificationToken;
 
     @Column(name = "verified", nullable = false)

@@ -15,6 +15,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,11 +24,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 @Service
+@EnableScheduling
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -209,6 +216,7 @@ public class UserService implements UserDetailsService {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+
     @Transactional
     public ResponseEntity<User> deleteUser(Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -250,5 +258,40 @@ public class UserService implements UserDetailsService {
 
     private String generateVerificationToken() {
         return UUID.randomUUID() + String.valueOf(new Date().toInstant().toEpochMilli());
+    }
+
+    @Transactional
+    public void deleteVerificationCode(User user) {
+        User updatedUser = userRepository.findById(user.getId()).orElse(null);
+
+        if (updatedUser != null && updatedUser.getVerificationToken() != null) {
+            String code = updatedUser.getVerificationToken();
+            long timestamp = Long.parseLong(code.substring(36));
+            LocalDateTime creationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+
+            if (creationDateTime.plusMinutes(5).isBefore(LocalDateTime.now())) {
+                updatedUser.setVerificationToken(null);
+                userRepository.save(updatedUser);
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 60 * 1000)
+    @Transactional
+    public void cleanUpExpiredVerificationCodes() {
+        LocalDateTime now = LocalDateTime.now();
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            if (user.getVerificationToken() != null && !user.isVerified()) {
+                String code = user.getVerificationToken();
+                long timestamp = Long.parseLong(code.substring(36));
+                LocalDateTime creationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+
+                if (creationDateTime.plusMinutes(5).isBefore(now)) {
+                    deleteVerificationCode(user);
+                }
+            }
+        }
     }
 }
