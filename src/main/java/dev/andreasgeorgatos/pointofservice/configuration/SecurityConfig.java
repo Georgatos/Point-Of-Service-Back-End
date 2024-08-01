@@ -40,12 +40,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         return http.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.OPTIONS).permitAll();
                     auth.requestMatchers("/api/v1/user-type").denyAll();
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/login").permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/users/forgotPassword").permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/users/resetPassword").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/verify").hasAnyAuthority("User", "Employee", "Manager", "Admin");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");

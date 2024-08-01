@@ -28,8 +28,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 @Service
@@ -169,7 +167,7 @@ public class UserService implements UserDetailsService {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<?> resetPassword(String email) {
+    public ResponseEntity<?> forgotPassword(String email) {
         if (email == null || email.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -179,9 +177,15 @@ public class UserService implements UserDetailsService {
         if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+        String resetPasswordToken = generateVerificationToken();
 
-        emailService.sendResetEmailLink(email);
+        User user = optionalUser.get();
 
+        user.setResetPasswordToken(resetPasswordToken);
+
+        userRepository.save(user);
+
+        emailService.sendForgotPasswordEmail(email, resetPasswordToken);
         return ResponseEntity.ok().build();
     }
 
@@ -213,6 +217,33 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         emailService.sendSuccessfulVerificationEmail(user.getEmail());
 
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> resetPassword(String email, String token, String password, String confirmPassword) {
+        if (password == null || password.isEmpty() || confirmPassword == null || confirmPassword.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (!password.equals(confirmPassword)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        User user = optionalUser.get();
+
+        if (user.getResetPasswordToken() != null && !user.getResetPasswordToken().equals(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        user.setPassword(securityConfig.delegatingPasswordEncoder().encode(password));
+        user.setResetPasswordToken(null);
+        emailService.passwordChanged(user.getEmail());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -264,13 +295,19 @@ public class UserService implements UserDetailsService {
     public void deleteVerificationCode(User user) {
         User updatedUser = userRepository.findById(user.getId()).orElse(null);
 
-        if (updatedUser != null && updatedUser.getVerificationToken() != null) {
-            String code = updatedUser.getVerificationToken();
-            long timestamp = Long.parseLong(code.substring(36));
-            LocalDateTime creationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+        if (updatedUser != null) {
+            if (updatedUser.getVerificationToken() != null && !updatedUser.isVerified()) {
+                String code = updatedUser.getVerificationToken();
+                long timestamp = Long.parseLong(code.substring(36));
+                LocalDateTime creationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
 
-            if (creationDateTime.plusMinutes(5).isBefore(LocalDateTime.now())) {
-                updatedUser.setVerificationToken(null);
+                if (creationDateTime.plusMinutes(30).isBefore(LocalDateTime.now())) {
+                    updatedUser.setVerificationToken(null);
+                    userRepository.save(updatedUser);
+                }
+            }
+            if (updatedUser.getResetPasswordToken() != null) {
+                updatedUser.setResetPasswordToken(null);
                 userRepository.save(updatedUser);
             }
         }
@@ -288,9 +325,13 @@ public class UserService implements UserDetailsService {
                 long timestamp = Long.parseLong(code.substring(36));
                 LocalDateTime creationDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
 
-                if (creationDateTime.plusMinutes(5).isBefore(now)) {
+                if (creationDateTime.plusMinutes(30).isBefore(now)) {
+                    emailService.sendNotificationDeletedCode(user.getEmail());
                     deleteVerificationCode(user);
                 }
+            }
+            if (user.getResetPasswordToken() != null) {
+                deleteVerificationCode(user);
             }
         }
     }

@@ -34,7 +34,7 @@ public class TokenExtractionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        if (path.equals("/api/v1/users/login") || path.equals("/api/v1/users/register")) {
+        if (path.equals("/api/v1/users/login") || path.equals("/api/v1/users/register") || path.equals("/api/v1/users/forgotPassword") || path.equals("/api/v1/users/resetPassword")) {
             filterChain.doFilter(request, response);
             return;
         }

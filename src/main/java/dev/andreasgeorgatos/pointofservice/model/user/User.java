@@ -36,6 +36,9 @@ public class User {
     @NotBlank(message = "The last name can't be null.")
     private String lastName;
 
+    @Column(name = "reset_password_token", length = 55)
+    private String resetPasswordToken;
+
     @Column(name = "verification_token", length = 55)
     private String verificationToken;
 

@@ -24,7 +24,7 @@ public class EmailService {
         message.setFrom(fromEmail);
         message.setTo(to);
         message.setSubject("Verification email");
-        message.setText("Your token to verify your e-mail address and your account is: " + token.substring(0, 36));
+        message.setText("Your token to verify your e-mail address and your account is: " + token.substring(0, 36) + " and it will last for 30 minutes");
 
         javaMailSender.send(message);
     }
@@ -39,13 +39,33 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
-    public void sendResetEmailLink(String email) {
+    public void sendForgotPasswordEmail(String email, String token) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(email);
+        message.setSubject("Reset your password");
+        message.setText("You are getting this e-mail because someone has requested a reset password, if you are not one who have requested it, please take the appropriate measures, otherwise, you can use this token: " + token + " to reset your password.");
+        javaMailSender.send(message);
+    }
+
+    public void sendNotificationDeletedCode(String email) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(fromEmail);
         message.setTo(email);
 
-        message.setSubject("Reset your password");
-        message.setText("You are getting this e-mail because someone has requested a reset password, if you are not one who have requested it, please take the appropriate measures");
+        message.setSubject("The verification code has been deleted");
+        message.setText("We are here to inform that your verification code has been erased from our system, and thus your account too, please create a new account if you would like to use our services.");
+        javaMailSender.send(message);
+    }
+
+
+    public void passwordChanged(String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(email);
+
+        message.setSubject("Your password has been updated.");
+        message.setText("We are sending you this e-mail to notify you that your password has been successfully updated.\nIn case you weren't the one who changed your account, please take measures imminently.");
         javaMailSender.send(message);
     }
 }

@@ -1,13 +1,11 @@
 package dev.andreasgeorgatos.pointofservice.controller.user;
 
-import dev.andreasgeorgatos.pointofservice.DTO.CredentialsDTO;
-import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
-import dev.andreasgeorgatos.pointofservice.DTO.VerificationCodeDTO;
+import dev.andreasgeorgatos.pointofservice.DTO.*;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
-import dev.andreasgeorgatos.pointofservice.model.user.User;
 import dev.andreasgeorgatos.pointofservice.service.user.POSUser;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -82,14 +80,16 @@ public class UserController {
         return ResponseEntity.ok().header("Authorization", "Bearer " + jwe).body(userDTO);
     }
 
-    @PostMapping("/resetPassword")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody String email, BindingResult bindingResult) {
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestBody @Valid EmailDTO emailDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            List<String> errors = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
             return ResponseEntity.badRequest().body(errors);
         }
 
-        return userService.resetPassword(email);
+        return userService.forgotPassword(emailDTO.getEmail());
     }
 
     @PostMapping("/verify")
@@ -100,6 +100,16 @@ public class UserController {
         }
 
         return userService.verifyEmail(verificationCode.getEmail(), verificationCode.getVerificationCode());
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO resetPassword, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        return userService.resetPassword(resetPassword.getEmail(), resetPassword.getToken(), resetPassword.getPassword(), resetPassword.getConfirmPassword());
     }
 
     @PutMapping("/{id}")
@@ -120,6 +130,7 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
 
     private boolean isUserValid(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
