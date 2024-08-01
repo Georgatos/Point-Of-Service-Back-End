@@ -67,7 +67,6 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-
         if (userService.registerUser(userDTO).getStatusCode() != HttpStatus.CREATED){
             return ResponseEntity.badRequest().body("Failed to create the user.");
         }
@@ -92,14 +91,17 @@ public class UserController {
         return userService.forgotPassword(emailDTO.getEmail());
     }
 
+    @CrossOrigin
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationCodeDTO verificationCode, BindingResult bindingResult) {
+    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationCodeDTO verificationCodeDTO, BindingResult bindingResult) {
+        System.out.println(verificationCodeDTO.getEmail());
+        System.out.println(verificationCodeDTO.getVerificationCode());
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
 
-        return userService.verifyEmail(verificationCode.getEmail(), verificationCode.getVerificationCode());
+        return userService.verifyEmail(verificationCodeDTO.getEmail(), verificationCodeDTO.getVerificationCode());
     }
 
     @PostMapping("/resetPassword")
