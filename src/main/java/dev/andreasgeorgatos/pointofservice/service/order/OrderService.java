@@ -4,7 +4,7 @@ import dev.andreasgeorgatos.pointofservice.model.item.Item;
 import dev.andreasgeorgatos.pointofservice.model.order.Order;
 import dev.andreasgeorgatos.pointofservice.model.order.OrderStatuses;
 import dev.andreasgeorgatos.pointofservice.model.order.OrderType;
-import dev.andreasgeorgatos.pointofservice.repository.food.ItemRepository;
+import dev.andreasgeorgatos.pointofservice.repository.item.ItemRepository;
 import dev.andreasgeorgatos.pointofservice.repository.orders.OrderRepository;
 import dev.andreasgeorgatos.pointofservice.repository.orders.OrderStatusRepository;
 import dev.andreasgeorgatos.pointofservice.repository.orders.OrderTypeRepository;

@@ -1,4 +1,4 @@
-package dev.andreasgeorgatos.pointofservice.repository.food;
+package dev.andreasgeorgatos.pointofservice.repository.item;
 
 import dev.andreasgeorgatos.pointofservice.model.item.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
