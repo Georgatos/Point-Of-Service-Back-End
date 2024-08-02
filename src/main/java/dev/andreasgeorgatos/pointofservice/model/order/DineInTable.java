@@ -26,5 +26,5 @@ public class DineInTable {
     private LocalDate createdAt;
 
     @Column(name = "updated_at")
-    private LocalDate updated_at;
+    private LocalDate updatedAt;
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/api/v1/item/OrderItem")
 public class OrderItemController {
 
     private final OrderItemService orderItemService;
@@ -47,7 +48,6 @@ public class OrderItemController {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
-
         return orderItemService.editOrderItemById(id, item);
     }
 
