@@ -39,136 +39,136 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return http.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(auth -> {
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/v1/user-type").denyAll();
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/login").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/forgotPassword").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/resetPassword").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/users/verify").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/users/verify").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/item").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/item").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/item/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/item/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/item").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/item/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/item/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/review").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/review/{id}").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/review").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/review/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/review/{id}").hasAnyAuthority("User", "Admin");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/review").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/review/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/review/{id}").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/notification").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/notification/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/notification").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/notification/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/notification/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/notification").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/notification/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/notification").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/notification/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/notification/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-status").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-status/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/payment-status").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/payment-status/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/payment-status/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-status").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-status/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/payment-status").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/payment-status/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/payment-status/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-methods").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/payment-methods").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/payment-methods/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/payment-methods/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-methods").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment-methods/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/payment-methods").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/payment-methods/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/payment-methods/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/payment").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/payment/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/payment/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/payment/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/payment").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/payment/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/payment/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-status").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-status/{id}").hasAnyAuthority("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order-status").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order-status/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order-status/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-status").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-status/{id}").hasAnyAuthority("User", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order-status").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order-status/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order-status/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-types").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-types/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order-types").hasAnyAuthority("ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order-types/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order-types/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-types").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order-types/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order-types").hasAnyAuthority("Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order-types/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order-types/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-status").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-status/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/delivery-status").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/delivery-status/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/delivery-status/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-status").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-status/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/delivery-status").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/delivery-status/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/delivery-status/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-history").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-history/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/delivery-history").hasAnyAuthority("ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/delivery-history/{id}").hasAnyAuthority("ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/delivery-history/{id}").hasAnyAuthority("ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-history").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/delivery-history/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/delivery-history").hasAnyAuthority("Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/delivery-history/{id}").hasAnyAuthority("Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/delivery-history/{id}").hasAnyAuthority("Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/addresses").hasAnyAuthority("ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/addresses/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/addresses").hasAnyAuthority("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/addresses/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/addresses/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/addresses").hasAnyAuthority("Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/addresses/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/addresses").hasAnyAuthority("User", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/addresses/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/addresses/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/referral-source").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/referral-source/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/referral-source").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/referral-source/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/referral-source/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/referral-source").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/referral-source/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/referral-source").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/referral-source/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/referral-source/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-used").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-used/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/points-used").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/points-used/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/points-used/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-used").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-used/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/points-used").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/points-used/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/points-used/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-to-euro-ratio").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-to-euro-ratio/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/points-to-euro-ratio").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/points-to-euro-ratio/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/points-to-euro-ratio/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-to-euro-ratio").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-to-euro-ratio/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/points-to-euro-ratio").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/points-to-euro-ratio/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/points-to-euro-ratio/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-earned").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-earned/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/points-earned").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/points-earned/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/points-earned/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-earned").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-earned/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/points-earned").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/points-earned/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/points-earned/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/membership-card").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/membership-card/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/membership-card").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/membership-card/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/membership-card/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/membership-card").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/membership-card/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/membership-card").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/membership-card/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/membership-card/{id}").hasAnyAuthority("Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/OrderItem").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/OrderItem/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/item/OrderItem").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "//api/v1/item/OrderItem/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/item/OrderItem/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/OrderItem").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/item/OrderItem/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/item/OrderItem").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "//api/v1/item/OrderItem/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/item/OrderItem/{id}").hasAnyAuthority("Manager", "Admin");
-
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order/DineIn").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order/DineIn/{id}").hasAnyAuthority("Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order/DineIn/{id}").hasAnyAuthority("Manager", "Admin");
-
-
-                }).addFilterBefore(new TokenExtractionFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class).httpBasic(Customizer.withDefaults())
-
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn/{id}").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order/DineIn").hasAnyAuthority("ROLE_USER", "ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/v1/order/DineIn/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order/DineIn/{id}").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN");
+                })
+                .addFilterBefore(new TokenExtractionFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
@@ -188,7 +188,6 @@ public class SecurityConfig {
             }
         });
     }
-
 
     @Bean
     public PasswordEncoder delegatingPasswordEncoder() {
