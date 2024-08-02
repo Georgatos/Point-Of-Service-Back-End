@@ -1,5 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.service.order;
 
+import dev.andreasgeorgatos.pointofservice.enums.TableStatus;
 import dev.andreasgeorgatos.pointofservice.model.order.DineInTable;
 import dev.andreasgeorgatos.pointofservice.repository.orders.DineInTableRepository;
 import jakarta.transaction.Transactional;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,20 @@ public class DineInTableService {
 
     @Transactional
     public ResponseEntity<DineInTable> createDineInTable(DineInTable dineInTable) {
-        return ResponseEntity.ok(dineInTableRepository.save(dineInTable));
+        DineInTable table = new DineInTable();
+
+        table.setCreatedAt(LocalDate.now());
+        table.setUpdatedAt(LocalDate.now());
+
+        if (TableStatus.valueOf(dineInTable.getStatus().toString()) != null) {
+            table.setStatus(TableStatus.valueOf(dineInTable.getStatus().toString()));
+        } else {
+            table.setStatus(TableStatus.OPEN);
+        }
+
+        table.setTableNumber(dineInTable.getTableNumber());
+
+        return ResponseEntity.ok(dineInTableRepository.save(table));
     }
 
     @Transactional

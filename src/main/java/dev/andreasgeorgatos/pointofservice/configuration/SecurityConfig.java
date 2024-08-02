@@ -160,9 +160,9 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.PUT, "//api/v1/item/OrderItem/{id}").hasAnyAuthority("Manager", "Admin");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/item/OrderItem/{id}").hasAnyAuthority("Manager", "Admin");
 
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn/").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn//{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order/DineIn/").hasAnyAuthority("User", "Employee", "Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn").hasAnyAuthority("User", "Employee", "Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn/{id}").hasAnyAuthority("User", "Employee", "Manager", "Admin");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order/DineIn").hasAnyAuthority("User", "Employee", "Manager", "Admin");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/order/DineIn/{id}").hasAnyAuthority("Manager", "Admin");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order/DineIn/{id}").hasAnyAuthority("Manager", "Admin");
 

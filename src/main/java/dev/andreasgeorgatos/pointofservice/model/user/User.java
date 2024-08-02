@@ -23,11 +23,6 @@ public class User {
     @Column(name = "id")
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_type_id", nullable = false)
-    @NotNull(message = "The user_type_id is a foreign key and it can't be null.")
-    private UserType userType;
-
     @Column(name = "first_name", nullable = false, length = 20)
     @NotBlank(message = "The first name can't be null.")
     private String firstName;
@@ -56,16 +51,26 @@ public class User {
     @NotBlank(message = "The e-mail can't be left blank.")
     private String email;
 
+
+    @Column(name = "username", nullable = false, unique = true)
+    @NotBlank(message = "The username field can't be left blank.")
+    private String username;
+
     @Column(name = "phone_number", nullable = false, length = 10)
-    @Size(min = 10, max = 10, message = "The phone number must have exactly 9 digits.")
+    @Size(min = 10, max = 10, message = "The phone number must have exactly 10 digits.")
     @NotBlank(message = "The phone number can't be left blank.")
     private String phoneNumber;
 
-
+    @ManyToOne
     @JoinColumn(name = "address_id")
     @NotNull(message = "The address_id is a foreign key and it can't be null.")
-    @ManyToOne
     private Address address;
+
+    @ManyToMany
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
 
     @ManyToMany
     @JoinColumn(name = "order_id")
@@ -75,7 +80,7 @@ public class User {
     @NotNull(message = "Please specify your age!")
     private LocalDate birthDate;
 
-    @JoinColumn(name = "membership_card")
     @ManyToOne
+    @JoinColumn(name = "membership_card")
     private MembershipCard membershipCard;
 }

@@ -39,7 +39,6 @@ public class DineInTableController {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
-
         return dineInTableService.createDineInTable(order);
     }
 
