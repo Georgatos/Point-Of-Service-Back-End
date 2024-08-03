@@ -20,8 +20,7 @@ public class POSUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        authorities.add(new SimpleGrantedAuthority(user.getUserType().getUserType()));
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
         return authorities;
     }
 

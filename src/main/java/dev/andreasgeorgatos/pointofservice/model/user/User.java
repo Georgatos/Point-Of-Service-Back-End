@@ -54,7 +54,7 @@ public class User {
 
     @Column(name = "username", nullable = false, unique = true)
     @NotBlank(message = "The username field can't be left blank.")
-    private String username;
+    private String userName;
 
     @Column(name = "phone_number", nullable = false, length = 10)
     @Size(min = 10, max = 10, message = "The phone number must have exactly 10 digits.")

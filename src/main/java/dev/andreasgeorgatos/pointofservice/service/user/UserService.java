@@ -4,12 +4,12 @@ import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.SecurityConfig;
 import dev.andreasgeorgatos.pointofservice.model.address.Address;
 import dev.andreasgeorgatos.pointofservice.model.rewards.MembershipCard;
+import dev.andreasgeorgatos.pointofservice.model.user.Role;
 import dev.andreasgeorgatos.pointofservice.model.user.User;
-import dev.andreasgeorgatos.pointofservice.model.user.UserType;
 import dev.andreasgeorgatos.pointofservice.repository.rewards.MembershipCardRepository;
 import dev.andreasgeorgatos.pointofservice.repository.users.AddressRepository;
+import dev.andreasgeorgatos.pointofservice.repository.users.RoleRepository;
 import dev.andreasgeorgatos.pointofservice.repository.users.UserRepository;
-import dev.andreasgeorgatos.pointofservice.repository.users.UserTypeRepository;
 import dev.andreasgeorgatos.pointofservice.service.email.EmailService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,21 +34,19 @@ import java.util.stream.Collectors;
 @EnableScheduling
 public class UserService implements UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final UserTypeRepository userTypeRepository;
     private final SecurityConfig securityConfig;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final MembershipCardRepository membershipCardRepository;
-    private final AddressRepository addressRepository;
     private final EmailService emailService;
     private final AddressService addressService;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserTypeRepository userTypeRepository, SecurityConfig securityConfig, MembershipCardRepository membershipCardRepository, AddressRepository addressRepository, EmailService emailService, AddressService addressService) {
-        this.userRepository = userRepository;
-        this.userTypeRepository = userTypeRepository;
+    public UserService(SecurityConfig securityConfig, UserRepository userRepository, RoleRepository roleRepository, MembershipCardRepository membershipCardRepository, AddressRepository addressRepository, EmailService emailService, AddressService addressService) {
         this.securityConfig = securityConfig;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.membershipCardRepository = membershipCardRepository;
-        this.addressRepository = addressRepository;
         this.emailService = emailService;
         this.addressService = addressService;
     }
@@ -62,6 +60,7 @@ public class UserService implements UserDetailsService {
 
         UserDTO userDTO = new UserDTO();
 
+        userDTO.setUserName(user.getUserName());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setPassword("This is classified information.");
@@ -126,29 +125,35 @@ public class UserService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        Optional<UserType> userType = userTypeRepository.findById(1L);
+        Optional<Role> potentialRole = roleRepository.findById(1L);
 
-        if (userType.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The user type is empty, please specify.");
+        if (potentialRole.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Role not found");
         }
+
+        List<Role> currentRoles = new ArrayList<>();
+        currentRoles.add(potentialRole.get());
+
 
         Optional<MembershipCard> optionalMembershipCard = membershipCardRepository.findById(1L);
 
         MembershipCard membershipCard = null;
-        if (!optionalMembershipCard.isEmpty()) {
+
+        if (optionalMembershipCard.isPresent()) {
             membershipCard = optionalMembershipCard.get();
         }
 
         Address address = addressService.createAddress(new Address(userDTO.getCity(), userDTO.getAddress(), userDTO.getAddressNumber(), userDTO.getPostalCode(), userDTO.getStoryLevel(), userDTO.getDoorRingBellName())).getBody();
 
         if (address == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The address is empty, please specify.: " + address);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The address is empty, please specify.");
         }
 
         String verificationToken = generateVerificationToken();
 
         User newUser = new User();
 
+        newUser.setUserName(userDTO.getUserName());
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
         newUser.setEmail(userDTO.getEmail());
@@ -156,10 +161,14 @@ public class UserService implements UserDetailsService {
         newUser.setPhoneNumber(userDTO.getPhoneNumber());
         newUser.setAddress(address);
         newUser.setMembershipCard(membershipCard);
-        newUser.setUserType(userType.get());
         newUser.setPassword(securityConfig.delegatingPasswordEncoder().encode(userDTO.getPassword()));
         newUser.setVerified(false);
         newUser.setVerificationToken(verificationToken);
+
+        if (newUser.getRoles() != null) {
+            currentRoles.addAll(newUser.getRoles());
+        }
+        newUser.setRoles(currentRoles);
 
         userRepository.save(newUser);
         emailService.sendRegistrationEmail(newUser.getEmail(), verificationToken);
@@ -270,6 +279,7 @@ public class UserService implements UserDetailsService {
 
         User user = optionalUser.get();
 
+        user.setUserName(userDTO.getUserName());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setPassword(userDTO.getPassword());
