@@ -52,11 +52,13 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseEntity<?> getUserDTO(Long id) {
-        User user = userRepository.findById(id).orElse(null);
+        Optional<User> optionalUser = userRepository.findById(id);
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
+        if (optionalUser.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        User user = optionalUser.get();
 
         UserDTO userDTO = new UserDTO();
 
@@ -78,11 +80,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> userOptional = userRepository.findUserByEmail(email);
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findUserByUsername(userName);
 
         if (userOptional.isEmpty()) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
+            throw new UsernameNotFoundException("User not found with user name: " + userName);
         }
 
         User user = userOptional.get();
@@ -91,7 +93,7 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isSameUser(String principal, long id) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(principal);
+        Optional<User> optionalUser = userRepository.findUserByUsername(principal);
 
         if (optionalUser.isEmpty()) {
             return false;
@@ -111,17 +113,17 @@ public class UserService implements UserDetailsService {
         return claims;
     }
 
-    public boolean loginUser(String email, String password) {
-        if (userRepository.findUserByEmail(email).isEmpty()) {
+    public boolean loginUser(String userName, String password) {
+        if (userRepository.findUserByUsername(userName).isEmpty()) {
             return false;
         }
-        User user = userRepository.findUserByEmail(email).get();
+        User user = userRepository.findUserByUsername(userName).get();
         return securityConfig.delegatingPasswordEncoder().matches(password, user.getPassword());
     }
 
     @Transactional
     public ResponseEntity<?> registerUser(UserDTO userDTO) {
-        if (userDTO == null || userRepository.findUserByEmail(userDTO.getEmail()).isPresent()) {
+        if (userDTO == null || userRepository.findUserByEmail(userDTO.getEmail()).isPresent() || userRepository.findUserByUsername(userDTO.getUserName()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
@@ -181,7 +183,7 @@ public class UserService implements UserDetailsService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        Optional<User> optionalUser = userRepository.findUserByUsername(email);
 
         if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

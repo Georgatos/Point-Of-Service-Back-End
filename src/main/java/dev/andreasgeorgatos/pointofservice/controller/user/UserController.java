@@ -5,7 +5,6 @@ import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
 import dev.andreasgeorgatos.pointofservice.service.user.POSUser;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -47,11 +46,11 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        if (!userService.loginUser(credentialsDTO.getEmail(), credentialsDTO.getPassword())) {
+        if (!userService.loginUser(credentialsDTO.getUserName(), credentialsDTO.getPassword())) {
             return ResponseEntity.notFound().build();
         }
 
-        POSUser foundUser = (POSUser) userService.loadUserByUsername(credentialsDTO.getEmail());
+        POSUser foundUser = (POSUser) userService.loadUserByUsername(credentialsDTO.getUserName());
         Map<String, Object> claims = userService.getClaims(foundUser);
         String jwe = jwtUtil.generateJWE(foundUser.getUser().getEmail(), claims);
 
@@ -67,11 +66,11 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        if (userService.registerUser(userDTO).getStatusCode() != HttpStatus.CREATED){
+        if (userService.registerUser(userDTO).getStatusCode() != HttpStatus.CREATED) {
             return ResponseEntity.badRequest().body("Failed to create the user.");
         }
 
-        POSUser foundUser = (POSUser) userService.loadUserByUsername(userDTO.getEmail());
+        POSUser foundUser = (POSUser) userService.loadUserByUsername(userDTO.getUserName());
 
         Map<String, Object> claims = userService.getClaims(foundUser);
         String jwe = jwtUtil.generateJWE(userDTO.getEmail(), claims);
