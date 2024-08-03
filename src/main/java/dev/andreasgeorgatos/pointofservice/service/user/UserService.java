@@ -175,7 +175,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(newUser);
         emailService.sendRegistrationEmail(newUser.getEmail(), verificationToken);
 
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     public ResponseEntity<?> forgotPassword(String email) {
@@ -228,7 +228,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         emailService.sendSuccessfulVerificationEmail(user.getEmail());
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
@@ -255,7 +255,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(securityConfig.delegatingPasswordEncoder().encode(password));
         user.setResetPasswordToken(null);
         emailService.passwordChanged(user.getEmail());
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
