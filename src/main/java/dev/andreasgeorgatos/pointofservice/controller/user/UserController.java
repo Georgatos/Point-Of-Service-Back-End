@@ -132,6 +132,21 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/getPermissions")
+    public ResponseEntity<?> getUserPermissions(@Valid @RequestBody UserNameDTO userNameDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+        POSUser user = (POSUser) userService.loadUserByUsername(userNameDTO.getUserName());
+
+        if (user == null) {
+            System.out.println("The user is null");
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user.getAuthorities());
+    }
+
 
     private boolean isUserValid(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

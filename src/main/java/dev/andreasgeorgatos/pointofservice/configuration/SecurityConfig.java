@@ -49,6 +49,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/login").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/forgotPassword").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/resetPassword").permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/users/getPermissions").hasAnyRole("USER", "EMPLOYEE", "MANAGER", "ADMIN");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/verify").hasAnyRole("USER", "EMPLOYEE", "MANAGER", "ADMIN");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/{id}").hasAnyRole("USER", "EMPLOYEE", "MANAGER", "ADMIN");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyRole("USER", "EMPLOYEE", "MANAGER", "ADMIN");
