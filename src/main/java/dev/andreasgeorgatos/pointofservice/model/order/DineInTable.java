@@ -16,7 +16,7 @@ public class DineInTable {
     @Column(name = "id")
     private long order_item_id;
 
-    @Column(name = "table_number")
+    @Column(name = "table_number", unique = true)
     private int tableNumber;
 
     @Column(name = "status")

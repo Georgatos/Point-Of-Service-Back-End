@@ -2,6 +2,7 @@ package dev.andreasgeorgatos.pointofservice.enums;
 
 public enum TableStatus {
     OPEN("Open"),
+    AVAILABLE("Available"),
     CLOSED("Closed"),
     RESERVED("Reserved");
 
