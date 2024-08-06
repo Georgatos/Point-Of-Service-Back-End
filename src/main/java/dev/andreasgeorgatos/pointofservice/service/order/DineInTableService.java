@@ -38,6 +38,15 @@ public class DineInTableService {
         return dineInTable.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
+    @Transactional
+    public ResponseEntity<DineInTable> getDineInTableByTableNumber(long tableNumber) {
+        Optional<DineInTable> optionalDineInTable = dineInTableRepository.getDineInTableByTableNumber(tableNumber);
+
+        return optionalDineInTable.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+
+    }
+
     @Transactional
     public ResponseEntity<DineInTable> createDineInTable(DineInTable dineInTable) {
         DineInTable table = new DineInTable();
