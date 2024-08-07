@@ -45,15 +45,15 @@ public class DineInTableService {
     @Transactional
     public ResponseEntity<DineInTable> getDineInTableByTableNumber(long tableNumber) {
         Optional<DineInTable> optionalDineInTable = dineInTableRepository.getDineInTableByTableNumber(tableNumber);
+        return optionalDineInTable.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-        optionalDineInTable.ifPresent(dineInTable -> System.out.println("Sending response: " + dineInTable));
+    }
 
-        if (optionalDineInTable.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    @Transactional
+    public ResponseEntity<?> deleteDineInTableByTableNumber(long tableNumber) {
+        boolean deleted = dineInTableRepository.deleteDineInTableByTableNumber(tableNumber);
 
-        return ResponseEntity.ok(optionalDineInTable.get());
-
+        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     @Transactional
@@ -63,10 +63,11 @@ public class DineInTableService {
         table.setCreatedAt(LocalDate.now());
         table.setUpdatedAt(LocalDate.now());
 
-        if (TableStatus.valueOf(dineInTable.getStatus().toString()) != null) {
-            table.setStatus(TableStatus.valueOf(dineInTable.getStatus().toString()));
-        } else {
-            table.setStatus(TableStatus.OPEN);
+        try {
+            TableStatus status = TableStatus.valueOf(dineInTable.getStatus().toString());
+            table.setStatus(status);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            table.setStatus(TableStatus.AVAILABLE);
         }
 
         table.setTableNumber(dineInTable.getTableNumber());
@@ -93,7 +94,7 @@ public class DineInTableService {
     }
 
     @Transactional
-    public ResponseEntity<DineInTable> deleteDineInTable(long id) {
+    public ResponseEntity<DineInTable> deleteDineInTableById(long id) {
         Optional<DineInTable> dineInTable = dineInTableRepository.findById(id);
 
         if (dineInTable.isPresent()) {

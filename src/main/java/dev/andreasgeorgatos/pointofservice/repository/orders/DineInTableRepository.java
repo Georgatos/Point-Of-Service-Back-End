@@ -13,4 +13,6 @@ public interface DineInTableRepository extends JpaRepository<DineInTable, Long> 
     @Query("SELECT dine FROM DineInTable dine WHERE  dine.tableNumber = :tableNumber")
     Optional<DineInTable> getDineInTableByTableNumber(long tableNumber);
 
+    @Query("DELETE DineInTable WHERE tableNumber = :tableNumber")
+    boolean deleteDineInTableByTableNumber(long tableNumber);
 }

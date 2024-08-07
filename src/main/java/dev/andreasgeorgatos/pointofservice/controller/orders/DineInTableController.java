@@ -1,7 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.controller.orders;
 
 import dev.andreasgeorgatos.pointofservice.model.order.DineInTable;
-import dev.andreasgeorgatos.pointofservice.repository.orders.DineInTableRepository;
 import dev.andreasgeorgatos.pointofservice.service.order.DineInTableService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +17,10 @@ import java.util.List;
 public class DineInTableController {
 
     private final DineInTableService dineInTableService;
-    private final DineInTableRepository dineInTableRepository;
 
     @Autowired
-    public DineInTableController(DineInTableService dineInTableService, DineInTableRepository dineInTableRepository) {
+    public DineInTableController(DineInTableService dineInTableService) {
         this.dineInTableService = dineInTableService;
-        this.dineInTableRepository = dineInTableRepository;
     }
 
     @GetMapping()
@@ -70,8 +67,23 @@ public class DineInTableController {
         return dineInTableService.editOrderHistoryById(id, dineInTable);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteDineInTableByTableNumber(@Valid Long id, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult
+                    .getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        return dineInTableService.deleteDineInTableByTableNumber(id);
+    }
+
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOrder(@Valid @PathVariable Long id) {
-        return dineInTableService.deleteDineInTable(id);
+    public ResponseEntity<?> deleteDineInTableById(@Valid @PathVariable Long id) {
+        return dineInTableService.deleteDineInTableById(id);
     }
 }
