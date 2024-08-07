@@ -163,6 +163,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/item/OrderItem/{id}").hasAnyRole("MANAGER", "ADMIN");
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/order/DineIn/getDineInTableByNumber").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/order/DineIn/{id}").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/order/DineIn").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/order/DineIn/{id}").hasAnyRole("MANAGER", "ADMIN");

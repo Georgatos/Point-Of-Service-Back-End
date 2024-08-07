@@ -3,6 +3,7 @@ package dev.andreasgeorgatos.pointofservice.service.order;
 import dev.andreasgeorgatos.pointofservice.enums.TableStatus;
 import dev.andreasgeorgatos.pointofservice.model.order.DineInTable;
 import dev.andreasgeorgatos.pointofservice.repository.orders.DineInTableRepository;
+import dev.andreasgeorgatos.pointofservice.service.user.ReviewService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,12 @@ import java.util.Optional;
 public class DineInTableService {
 
     private final DineInTableRepository dineInTableRepository;
+    private final ReviewService reviewService;
 
     @Autowired
-    public DineInTableService(DineInTableRepository dineInTableRepository) {
+    public DineInTableService(DineInTableRepository dineInTableRepository, ReviewService reviewService) {
         this.dineInTableRepository = dineInTableRepository;
+        this.reviewService = reviewService;
     }
 
     public ResponseEntity<List<DineInTable>> getAllDineInTables() {
@@ -43,7 +46,13 @@ public class DineInTableService {
     public ResponseEntity<DineInTable> getDineInTableByTableNumber(long tableNumber) {
         Optional<DineInTable> optionalDineInTable = dineInTableRepository.getDineInTableByTableNumber(tableNumber);
 
-        return optionalDineInTable.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        optionalDineInTable.ifPresent(dineInTable -> System.out.println("Sending response: " + dineInTable));
+
+        if (optionalDineInTable.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(optionalDineInTable.get());
 
     }
 
@@ -61,7 +70,6 @@ public class DineInTableService {
         }
 
         table.setTableNumber(dineInTable.getTableNumber());
-
         return ResponseEntity.ok(dineInTableRepository.save(table));
     }
 
@@ -74,7 +82,6 @@ public class DineInTableService {
 
             oldDineInTable.setTableNumber(dineInTable.getTableNumber());
             oldDineInTable.setCreatedAt(dineInTable.getCreatedAt());
-            oldDineInTable.setOrder_item_id(dineInTable.getOrder_item_id());
             oldDineInTable.setUpdatedAt(dineInTable.getUpdatedAt());
             oldDineInTable.setCreatedAt(dineInTable.getCreatedAt());
 

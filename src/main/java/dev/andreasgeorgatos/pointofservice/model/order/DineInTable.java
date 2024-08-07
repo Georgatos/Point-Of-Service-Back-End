@@ -1,5 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.model.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.andreasgeorgatos.pointofservice.enums.TableStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,8 +14,8 @@ public class DineInTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long order_item_id;
+    @Column(name = "order_item_id")
+    private long orderItemId;
 
     @Column(name = "table_number", unique = true)
     private int tableNumber;
@@ -23,8 +24,10 @@ public class DineInTable {
     private TableStatus status;
 
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
 
     @Column(name = "updated_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate updatedAt;
 }

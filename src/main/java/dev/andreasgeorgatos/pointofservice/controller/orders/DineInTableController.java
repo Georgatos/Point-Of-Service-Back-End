@@ -36,7 +36,7 @@ public class DineInTableController {
         return dineInTableService.getDineInTableById(id);
     }
 
-    @GetMapping()
+    @PostMapping("/getDineInTableByNumber")
     public ResponseEntity<?> getDineInTableByNumber(@Valid @RequestBody Long tableNumber, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
