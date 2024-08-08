@@ -1,5 +1,8 @@
 package dev.andreasgeorgatos.pointofservice.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum CategoryType {
 
     BREAKFAST("Breakfast"),
@@ -17,9 +20,5 @@ public enum CategoryType {
 
     CategoryType(String category) {
         this.category = category;
-    }
-
-    public String getCategory() {
-        return category;
     }
 }

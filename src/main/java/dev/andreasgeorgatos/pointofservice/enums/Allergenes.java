@@ -1,5 +1,8 @@
 package dev.andreasgeorgatos.pointofservice.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Allergenes {
     GLUTEN("Gluten"),
     DAIRY("Dairy"),
@@ -18,9 +21,5 @@ public enum Allergenes {
 
     Allergenes(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

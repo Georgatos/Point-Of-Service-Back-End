@@ -1,5 +1,8 @@
 package dev.andreasgeorgatos.pointofservice.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum MembershipType {
     LOCAL("Local"),
     TOURIST("Tourist"),
@@ -13,9 +16,4 @@ public enum MembershipType {
     MembershipType(String value) {
         this.value = value;
     }
-
-    public String getValue() {
-        return value;
-    }
-
 }

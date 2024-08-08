@@ -14,8 +14,8 @@ public class DineInTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_item_id")
-    private long orderItemId;
+    @Column(name = "id")
+    private long id;
 
     @Column(name = "table_number", unique = true)
     private int tableNumber;
