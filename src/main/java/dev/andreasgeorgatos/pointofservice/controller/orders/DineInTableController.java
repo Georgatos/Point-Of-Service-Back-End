@@ -86,7 +86,7 @@ public class DineInTableController {
             return ResponseEntity.notFound().build();
         }
 
-        return dineInTableService.deleteDineInTableById(table.getOrderItemId());
+        return dineInTableService.deleteDineInTableById(table.getId());
     }
 
 

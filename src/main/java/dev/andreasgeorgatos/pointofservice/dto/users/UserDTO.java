@@ -2,6 +2,7 @@ package dev.andreasgeorgatos.pointofservice.dto.users;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
