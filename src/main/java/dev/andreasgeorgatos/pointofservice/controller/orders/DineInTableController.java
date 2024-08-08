@@ -1,5 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.controller.orders;
 
+import dev.andreasgeorgatos.pointofservice.dto.tables.TableNumberDTO;
 import dev.andreasgeorgatos.pointofservice.model.order.DineInTable;
 import dev.andreasgeorgatos.pointofservice.service.order.DineInTableService;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/v1/order/DineIn")
@@ -34,21 +36,21 @@ public class DineInTableController {
     }
 
     @PostMapping("/getDineInTableByNumber")
-    public ResponseEntity<?> getDineInTableByNumber(@Valid @RequestBody Long tableNumber, BindingResult bindingResult) {
+    public ResponseEntity<?> getDineInTableByNumber(@Valid @RequestBody TableNumberDTO tableNumberDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
-        return dineInTableService.getDineInTableByTableNumber(tableNumber);
+        return dineInTableService.getDineInTableByTableNumber(tableNumberDTO.getTableNumber());
     }
 
     @PostMapping()
-    public ResponseEntity<?> createDineInTable(@Valid @RequestBody DineInTable order, BindingResult bindingResult) {
+    public ResponseEntity<?> createDineInTable(@Valid @RequestBody DineInTable table, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
-        return dineInTableService.createDineInTable(order);
+        return dineInTableService.createDineInTable(table);
     }
 
 
@@ -67,18 +69,24 @@ public class DineInTableController {
         return dineInTableService.editOrderHistoryById(id, dineInTable);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteDineInTableByTableNumber(@Valid Long id, BindingResult bindingResult) {
+    @PostMapping("/deleteTableByNumber")
+    public ResponseEntity<?> deleteDineInTableByTableNumber(@Valid @RequestBody TableNumberDTO tableNumberDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult
                     .getAllErrors()
                     .stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
+                    .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);
         }
 
-        return dineInTableService.deleteDineInTableByTableNumber(id);
+        DineInTable table = dineInTableService.getDineInTableByTableNumber(tableNumberDTO.getTableNumber()).getBody();
+
+        if (table == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return dineInTableService.deleteDineInTableById(table.getOrderItemId());
     }
 
 

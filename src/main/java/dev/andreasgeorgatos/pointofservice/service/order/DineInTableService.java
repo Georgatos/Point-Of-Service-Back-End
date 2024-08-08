@@ -50,13 +50,6 @@ public class DineInTableService {
     }
 
     @Transactional
-    public ResponseEntity<?> deleteDineInTableByTableNumber(long tableNumber) {
-        boolean deleted = dineInTableRepository.deleteDineInTableByTableNumber(tableNumber);
-
-        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
-
-    @Transactional
     public ResponseEntity<DineInTable> createDineInTable(DineInTable dineInTable) {
         DineInTable table = new DineInTable();
 

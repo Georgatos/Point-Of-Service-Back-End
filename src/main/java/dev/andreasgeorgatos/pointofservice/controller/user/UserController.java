@@ -1,6 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.controller.user;
 
-import dev.andreasgeorgatos.pointofservice.DTO.*;
+import dev.andreasgeorgatos.pointofservice.dto.users.*;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
 import dev.andreasgeorgatos.pointofservice.service.user.POSUser;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;

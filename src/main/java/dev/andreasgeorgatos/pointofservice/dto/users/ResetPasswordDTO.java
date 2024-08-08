@@ -1,4 +1,4 @@
-package dev.andreasgeorgatos.pointofservice.DTO;
+package dev.andreasgeorgatos.pointofservice.dto.users;
 
 public class ResetPasswordDTO {
     private String email;

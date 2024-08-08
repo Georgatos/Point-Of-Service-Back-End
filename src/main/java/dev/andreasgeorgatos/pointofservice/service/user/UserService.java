@@ -1,6 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.service.user;
 
-import dev.andreasgeorgatos.pointofservice.DTO.UserDTO;
+import dev.andreasgeorgatos.pointofservice.dto.users.UserDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.SecurityConfig;
 import dev.andreasgeorgatos.pointofservice.model.address.Address;
 import dev.andreasgeorgatos.pointofservice.model.rewards.MembershipCard;
