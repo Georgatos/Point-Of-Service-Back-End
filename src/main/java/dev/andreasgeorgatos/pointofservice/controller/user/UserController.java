@@ -30,6 +30,12 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
+
+    @GetMapping("/getAllEmployees")
+    public ResponseEntity<?> getAllEmployees() {
+        return userService.getAllEmployees();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         if (!isUserValid(id)) {
@@ -58,7 +64,6 @@ public class UserController {
 
     }
 
-    @CrossOrigin
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -90,7 +95,6 @@ public class UserController {
         return userService.forgotPassword(emailDTO.getEmail());
     }
 
-    @CrossOrigin
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationCodeDTO verificationCodeDTO, BindingResult bindingResult) {
         System.out.println(verificationCodeDTO.getEmail());

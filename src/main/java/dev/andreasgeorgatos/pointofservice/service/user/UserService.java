@@ -1,7 +1,7 @@
 package dev.andreasgeorgatos.pointofservice.service.user;
 
-import dev.andreasgeorgatos.pointofservice.dto.users.UserDTO;
 import dev.andreasgeorgatos.pointofservice.configuration.SecurityConfig;
+import dev.andreasgeorgatos.pointofservice.dto.users.UserDTO;
 import dev.andreasgeorgatos.pointofservice.model.address.Address;
 import dev.andreasgeorgatos.pointofservice.model.rewards.MembershipCard;
 import dev.andreasgeorgatos.pointofservice.model.user.Role;
@@ -49,6 +49,16 @@ public class UserService implements UserDetailsService {
         this.membershipCardRepository = membershipCardRepository;
         this.emailService = emailService;
         this.addressService = addressService;
+    }
+
+
+    public ResponseEntity<?> getAllEmployees() {
+        Optional<List<User>> optionalEmployees = userRepository.getAllEmployees();
+
+        if (optionalEmployees.isEmpty() || optionalEmployees.get().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(optionalEmployees.get());
     }
 
     public ResponseEntity<?> getUserDTO(Long id) {
