@@ -1,6 +1,7 @@
 package dev.andreasgeorgatos.pointofservice.service.user;
 
 import dev.andreasgeorgatos.pointofservice.configuration.SecurityConfig;
+import dev.andreasgeorgatos.pointofservice.dto.users.EmployeeDTO;
 import dev.andreasgeorgatos.pointofservice.dto.users.UserDTO;
 import dev.andreasgeorgatos.pointofservice.model.address.Address;
 import dev.andreasgeorgatos.pointofservice.model.rewards.MembershipCard;
@@ -58,7 +59,28 @@ public class UserService implements UserDetailsService {
         if (optionalEmployees.isEmpty() || optionalEmployees.get().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(optionalEmployees.get());
+
+        Map<Long, EmployeeDTO> employeeMap = new HashMap<>();
+
+        for (Object[] result : optionalEmployees.get()) {
+            Long id = (Long) result[0];
+            String userName = (String) result[1];
+            String role = (String) result[2];
+
+            EmployeeDTO employeeDTO = employeeMap.get(id);
+
+            if (employeeDTO == null) {
+                employeeDTO = new EmployeeDTO();
+                employeeDTO.setId(id);
+                employeeDTO.setUserName(userName);
+                employeeDTO.setRoles(new ArrayList<>());
+                employeeMap.put(id, employeeDTO);
+            }
+
+            employeeDTO.getRoles().add(role);
+        }
+
+        return ResponseEntity.ok(employeeMap);
     }
 
     public ResponseEntity<?> getUserDTO(Long id) {
