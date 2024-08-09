@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
 
 
     public ResponseEntity<?> getAllEmployees() {
-        Optional<List<User>> optionalEmployees = userRepository.getAllEmployees();
+        Optional<List<Object[]>> optionalEmployees = userRepository.getAllEmployees();
 
         if (optionalEmployees.isEmpty() || optionalEmployees.get().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
