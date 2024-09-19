@@ -63,23 +63,22 @@ public class UserService implements UserDetailsService {
         Map<Long, EmployeeDTO> employeeMap = new HashMap<>();
 
         for (Object[] result : optionalEmployees.get()) {
-            Long id = (Long) result[0];
+            Long userId = (Long) result[0];
             String userName = (String) result[1];
             String role = (String) result[2];
 
-            EmployeeDTO employeeDTO = employeeMap.get(id);
+            EmployeeDTO employeeDTO = employeeMap.get(userId);
 
             if (employeeDTO == null) {
                 employeeDTO = new EmployeeDTO();
-                employeeDTO.setId(id);
+                employeeDTO.setUserId(userId);
                 employeeDTO.setUserName(userName);
                 employeeDTO.setRoles(new ArrayList<>());
-                employeeMap.put(id, employeeDTO);
+                employeeMap.put(userId, employeeDTO);
             }
 
             employeeDTO.getRoles().add(role);
         }
-
         return ResponseEntity.ok(employeeMap);
     }
 
