@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Data
@@ -16,18 +17,35 @@ public class Shift {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "employee_id")
-    private User employeeId;
+    @JoinColumn(name = "user_id")
+    private User user_id;
 
     @OneToOne
     @JoinColumn(name = "role_id")
     private Role roleId;
 
-    @Column(name="shift_start")
+    @Column(name = "shift_start")
     private LocalDate shiftStart;
 
 
-    @Column(name="shift_end")
+    @Column(name = "shift_end")
     private LocalDate shiftEnd;
 
+    @ManyToOne
+    @JoinColumn(name = "started_by")
+    private User startedBy;
+
+    @Column(name = "started_by")
+    private String startedByMethod;
+
+    @ManyToOne
+    @JoinColumn(name = "ended_by")
+    private User endedBy;
+
+    @Column(name = "ended_by")
+    private String endedByMethod;
+
+    @OneToMany
+    @Column(name = "past_shifts_id")
+    private Set<ShiftLog> pastShiftLogsId;
 }

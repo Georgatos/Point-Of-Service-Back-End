@@ -5,6 +5,7 @@ import dev.andreasgeorgatos.pointofservice.model.order.OrderStatuses;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -32,5 +33,8 @@ public class DeliveryHistory {
     @OneToOne
     @JoinColumn(name = "order_status_id", nullable = false)
     private OrderStatuses orderStatus;
+
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
 
 }

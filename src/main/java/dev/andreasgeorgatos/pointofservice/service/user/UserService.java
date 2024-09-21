@@ -64,14 +64,20 @@ public class UserService implements UserDetailsService {
 
         for (Object[] result : optionalEmployees.get()) {
             Long userId = (Long) result[0];
-            String userName = (String) result[1];
-            String role = (String) result[2];
+            String firstName = (String) result[1];
+            String lastName = (String) result[2];
+            String imageUrl = (String) result[3];
+            String userName = (String) result[4];
+            String role = (String) result[5];
 
             EmployeeDTO employeeDTO = employeeMap.get(userId);
 
             if (employeeDTO == null) {
                 employeeDTO = new EmployeeDTO();
                 employeeDTO.setUserId(userId);
+                employeeDTO.setFirstName(firstName);
+                employeeDTO.setLastName(lastName);
+                employeeDTO.setImageUrl(imageUrl);
                 employeeDTO.setUserName(userName);
                 employeeDTO.setRoles(new ArrayList<>());
                 employeeMap.put(userId, employeeDTO);

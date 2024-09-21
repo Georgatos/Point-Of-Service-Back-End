@@ -1,6 +1,5 @@
 package dev.andreasgeorgatos.pointofservice.controller.rewards;
 
-import dev.andreasgeorgatos.pointofservice.model.rewards.PointsUsed;
 import dev.andreasgeorgatos.pointofservice.service.rewards.PointsUsedService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

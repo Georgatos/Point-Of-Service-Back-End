@@ -45,7 +45,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/user-type").denyAll();
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/users/getAllEmployees").hasAnyRole("MANAGER", "ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/users/ getAllEmployees").hasAnyRole("MANAGER", "ADMIN");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/login").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/forgotPassword").permitAll();

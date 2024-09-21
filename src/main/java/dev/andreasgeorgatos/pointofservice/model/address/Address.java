@@ -19,17 +19,21 @@ public class Address {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "Country", nullable = false)
+    @NotBlank(message = "You must specify your country.")
+    private String country;
+
     @Column(name = "city", nullable = false)
     @NotBlank(message = "You must specify your city address.")
     private String city;
 
-    @Column(name = "address", nullable = false)
-    @NotBlank(message = "You must specify an address.")
-    private String address;
+    @Column(name = "street", nullable = false)
+    @NotBlank(message = "You must specify a street.")
+    private String street;
 
-    @Column(name = "address_number", nullable = false)
-    @PositiveOrZero(message = "The street address must be a positive number.")
-    private long addressNumber;
+    @Column(name = "number", nullable = false)
+    @PositiveOrZero(message = "The street address number must be a positive number.")
+    private String number;
 
     @Column(name = "postal_code", nullable = false)
     @NotBlank(message = "You must specify your area postal code.")
@@ -43,10 +47,10 @@ public class Address {
     @NotBlank(message = "You must specify the name of your door ring bell.")
     private String doorRingBellName;
 
-    public Address(String city, String address, long addressNumber, String postalCode, long storyLevel, String doorRingBellName) {
+    public Address(String city, String street, String number, String postalCode, long storyLevel, String doorRingBellName) {
         this.city = city;
-        this.address = address;
-        this.addressNumber = addressNumber;
+        this.street = street;
+        this.number = number;
         this.postalCode = postalCode;
         this.storyLevel = storyLevel;
         this.doorRingBellName = doorRingBellName;

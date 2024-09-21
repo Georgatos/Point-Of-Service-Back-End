@@ -26,11 +26,11 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "order_status_id")
-    private OrderStatuses orderStatus;
+    private OrderStatuses orderStatusid;
 
     @ManyToOne
     @JoinColumn(name = "order_types_id")
-    private OrderType orderType;
+    private OrderType orderTypeId;
 
     @Column(name = "order_total", nullable = false)
     @PositiveOrZero(message = "The cost of the order can be only positive or zero.")

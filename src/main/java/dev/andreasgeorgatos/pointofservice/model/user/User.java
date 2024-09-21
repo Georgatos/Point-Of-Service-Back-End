@@ -56,6 +56,9 @@ public class User {
     @NotBlank(message = "The username field can't be left blank.")
     private String userName;
 
+    @Column(name = "image_url", nullable = true)
+    private String imageUrl;
+
     @Column(name = "phone_number", nullable = false, length = 10)
     @Size(min = 10, max = 10, message = "The phone number must have exactly 10 digits.")
     @NotBlank(message = "The phone number can't be left blank.")
@@ -64,7 +67,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "address_id")
     @NotNull(message = "The address_id is a foreign key and it can't be null.")
-    private Address address;
+    private Address addressId;
 
     @ManyToMany
     @JoinTable(name = "users_roles",
@@ -80,7 +83,7 @@ public class User {
     @NotNull(message = "Please specify your age!")
     private LocalDate birthDate;
 
-    @ManyToOne
-    @JoinColumn(name = "membership_card")
-    private MembershipCard membershipCard;
+    @OneToOne
+    @JoinColumn(name = "membership_card_id")
+    private MembershipCard membershipCardId;
 }

@@ -14,9 +14,6 @@ public class PointsToEuroRatio {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "real_life_money")
-    private BigDecimal realLifeMoney;
-
-    @Column(name = "points_worth")
-    private BigDecimal pointsWorth;
+    @Column(name = "points_per_euro")
+    private BigDecimal pointsPerEuro;
 }

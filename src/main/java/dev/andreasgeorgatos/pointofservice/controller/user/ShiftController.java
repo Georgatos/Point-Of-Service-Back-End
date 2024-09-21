@@ -24,17 +24,17 @@ public class ShiftController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Shift>> getAllReviews() {
+    public ResponseEntity<List<Shift>> getAllShifts() {
         return shiftService.getAllShifts();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Shift> getReviewById(@PathVariable Long id) {
+    public ResponseEntity<Shift> getShiftById(@PathVariable Long id) {
         return shiftService.getShiftById(id);
     }
 
     @PostMapping()
-    public ResponseEntity<?> createReview(@Valid @RequestBody Shift shift, BindingResult bindingResult) {
+    public ResponseEntity<?> createShift(@Valid @RequestBody Shift shift, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
@@ -43,7 +43,7 @@ public class ShiftController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> editReviewById(@Valid @PathVariable Long id, @RequestBody Shift shift, BindingResult bindingResult) {
+    public ResponseEntity<?> editShiftById(@Valid @PathVariable Long id, @RequestBody Shift shift, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
@@ -53,7 +53,7 @@ public class ShiftController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReviewById(@Valid @PathVariable Long id) {
+    public ResponseEntity<?> deleteShiftById(@Valid @PathVariable Long id) {
         return shiftService.deleteReviewById(id);
     }
 }

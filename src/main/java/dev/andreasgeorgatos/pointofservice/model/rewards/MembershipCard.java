@@ -1,6 +1,7 @@
 package dev.andreasgeorgatos.pointofservice.model.rewards;
 
 import dev.andreasgeorgatos.pointofservice.enums.MembershipType;
+import dev.andreasgeorgatos.pointofservice.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,6 +19,10 @@ public class MembershipCard {
     @Column(name = "id")
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     @NotNull(message = "The discount type is a required field.")
@@ -27,9 +32,9 @@ public class MembershipCard {
     @OneToOne
     private ReferralSource referralSource;
 
-    @Column(name = "percentage")
+    @Column(name = "percentage_discount")
     @PositiveOrZero
-    private double percentage;
+    private double percentageDiscount;
 
     @Column(name = "can_be_refreshed")
     private boolean canBeRefreshed;

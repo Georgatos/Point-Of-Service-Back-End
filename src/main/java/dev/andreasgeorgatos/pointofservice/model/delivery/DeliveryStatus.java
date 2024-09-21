@@ -18,11 +18,11 @@ public class DeliveryStatus {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    private Order orderId;
 
     @ManyToOne
     @JoinColumn(name = "order_status_id", nullable = false)
-    private OrderStatuses orderStatus;
+    private OrderStatuses orderStatusId;
 
     @Column(name = "delivery_date", nullable = false)
     private LocalDateTime deliveryDate;

@@ -18,6 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.userName = :userName")
     Optional<User> findUserByUsername(String userName);
 
-    @Query("SELECT u.id, u.userName, r.name FROM User u INNER JOIN u.roles r WHERE r.name NOT IN ('CUSTOMER', 'ADMIN')")
+    @Query("SELECT u.id, u.firstName, u.lastName, u.imageUrl, u.userName, r.name FROM User u INNER JOIN u.roles r WHERE r.name NOT IN ('CUSTOMER', 'ADMIN')")
     Optional<List<Object[]>> getAllEmployees();
 }

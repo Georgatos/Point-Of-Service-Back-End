@@ -19,8 +19,8 @@ public class ServerAssignment {
 
 
     @OneToOne
-    @JoinColumn(name = "server_id")
-    private User serverId;
+    @JoinColumn(name = "user_id")
+    private User userId;
 
     @OneToOne
     @JoinColumn(name = "table_id")

@@ -1,7 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.service.rewards;
 
 import dev.andreasgeorgatos.pointofservice.model.rewards.MembershipCard;
-import dev.andreasgeorgatos.pointofservice.model.rewards.PointsEarned;
 import dev.andreasgeorgatos.pointofservice.model.user.User;
 import dev.andreasgeorgatos.pointofservice.repository.rewards.MembershipCardRepository;
 import dev.andreasgeorgatos.pointofservice.repository.rewards.PointsEarnedRepository;
