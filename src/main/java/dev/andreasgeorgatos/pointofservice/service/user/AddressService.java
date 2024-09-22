@@ -48,12 +48,13 @@ public class AddressService {
         if (optionalAddress.isPresent()) {
             Address editedAddress = optionalAddress.get();
 
-            editedAddress.setAddress(address.getAddress());
-            editedAddress.setAddressNumber(address.getAddressNumber());
+            editedAddress.setStreet(address.getStreet());
+            editedAddress.setNumber(address.getNumber());
             editedAddress.setCity(address.getCity());
             editedAddress.setPostalCode(address.getPostalCode());
             editedAddress.setDoorRingBellName(address.getDoorRingBellName());
-            editedAddress.setAddressNumber(address.getAddressNumber());
+            editedAddress.setCountry(address.getCountry());
+            editedAddress.setStoryLevel(address.getStoryLevel());
 
             addressRepository.save(editedAddress);
 

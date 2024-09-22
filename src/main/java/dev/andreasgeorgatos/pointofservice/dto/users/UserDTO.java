@@ -15,12 +15,12 @@ public class UserDTO {
     private String password;
     private String email;
     private String city;
-    private String address;
+    private String street;
     private String postalCode;
     private String doorRingBellName;
     private String phoneNumber;
+    private String number;
 
-    private long addressNumber;
     private long storyLevel;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

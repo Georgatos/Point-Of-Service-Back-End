@@ -58,7 +58,10 @@ public class OrderService {
         if (foundOrder.isPresent()) {
             Order oldOrder = foundOrder.get();
 
-            oldOrder.setOrderStatus(order.getOrderStatus());
+            oldOrder.setOrderTotal(order.getOrderTotal());
+            oldOrder.setOrderStatusId(order.getOrderStatusId());
+            oldOrder.setOrderTypeId(order.getOrderTypeId());
+            oldOrder.setItems(order.getItems());
             oldOrder.setOrderDate(order.getOrderDate());
 
             Order savedOrder = orderRepository.save(oldOrder);
@@ -69,8 +72,8 @@ public class OrderService {
 
     @Transactional
     public ResponseEntity<Order> createOrder(Order order) {
-        Optional<OrderType> orderType = orderTypeRepository.findById(order.getOrderType().getId());
-        Optional<OrderStatuses> orderStatus = orderStatusRepository.findById(order.getOrderStatus().getId());
+        Optional<OrderType> orderType = orderTypeRepository.findById(order.getOrderTypeId().getId());
+        Optional<OrderStatuses> orderStatus = orderStatusRepository.findById(order.getOrderStatusId().getId());
 
         if (orderType.isEmpty() || orderStatus.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -88,8 +91,8 @@ public class OrderService {
             orderTotal += optionalItem.get().getItemPrice();
         }
 
-        order.setOrderType(orderType.get());
-        order.setOrderStatus(orderStatus.get());
+        order.setOrderTypeId(orderType.get());
+        order.setOrderStatusId(orderStatus.get());
         order.setItems(items);
         order.setOrderTotal(orderTotal);
 

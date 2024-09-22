@@ -53,7 +53,7 @@ public class NotificationService {
             oldNotification.setNotificationDate(notification.getNotificationDate());
             oldNotification.setNotificationType(notification.getNotificationType());
             oldNotification.setMessage(notification.getMessage());
-            oldNotification.setUser(notification.getUser());
+            oldNotification.setUserId(notification.getUserId());
             oldNotification.setOrderStatusId(notification.getOrderStatusId());
 
             Notification savedNotification = notificationRepository.save(notification);

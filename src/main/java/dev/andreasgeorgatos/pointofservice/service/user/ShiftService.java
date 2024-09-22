@@ -51,7 +51,7 @@ public class ShiftService {
 
             oldShift.setShiftStart(shift.getShiftStart());
             oldShift.setShiftEnd(shift.getShiftEnd());
-            oldShift.setEmployeeId(shift.getEmployeeId());
+            oldShift.setUserId(shift.getUserId());
             oldShift.setRoleId(shift.getRoleId());
 
             return ResponseEntity.ok(shiftRepository.save(oldShift));

@@ -18,7 +18,7 @@ public class Shift {
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    private User user_id;
+    private User userId;
 
     @OneToOne
     @JoinColumn(name = "role_id")
@@ -35,14 +35,14 @@ public class Shift {
     @JoinColumn(name = "started_by")
     private User startedBy;
 
-    @Column(name = "started_by")
+    @Column(name = "started_by_method")
     private String startedByMethod;
 
     @ManyToOne
     @JoinColumn(name = "ended_by")
     private User endedBy;
 
-    @Column(name = "ended_by")
+    @Column(name = "ended_by_method")
     private String endedByMethod;
 
     @OneToMany

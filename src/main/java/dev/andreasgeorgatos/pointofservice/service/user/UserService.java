@@ -104,12 +104,12 @@ public class UserService implements UserDetailsService {
         userDTO.setLastName(user.getLastName());
         userDTO.setPassword("This is classified information.");
         userDTO.setEmail(user.getEmail());
-        userDTO.setCity(user.getAddress().getCity());
-        userDTO.setAddress(user.getAddress().getAddress());
-        userDTO.setPostalCode(user.getAddress().getPostalCode());
-        userDTO.setDoorRingBellName(user.getAddress().getPostalCode());
-        userDTO.setAddressNumber(user.getAddress().getAddressNumber());
-        userDTO.setStoryLevel(user.getAddress().getStoryLevel());
+        userDTO.setCity(user.getAddressId().getCity());
+        userDTO.setStreet(user.getAddressId().getStreet());
+        userDTO.setPostalCode(user.getAddressId().getPostalCode());
+        userDTO.setDoorRingBellName(user.getAddressId().getPostalCode());
+        userDTO.setNumber(user.getAddressId().getNumber());
+        userDTO.setStoryLevel(user.getAddressId().getStoryLevel());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setBirthDate(user.getBirthDate());
 
@@ -182,7 +182,7 @@ public class UserService implements UserDetailsService {
             membershipCard = optionalMembershipCard.get();
         }
 
-        Address address = addressService.createAddress(new Address(userDTO.getCity(), userDTO.getAddress(), userDTO.getAddressNumber(), userDTO.getPostalCode(), userDTO.getStoryLevel(), userDTO.getDoorRingBellName())).getBody();
+        Address address = addressService.createAddress(new Address(userDTO.getCity(), userDTO.getStreet(), userDTO.getNumber(), userDTO.getPostalCode(), userDTO.getStoryLevel(), userDTO.getDoorRingBellName())).getBody();
 
         if (address == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The address is empty, please specify.");
@@ -198,8 +198,8 @@ public class UserService implements UserDetailsService {
         newUser.setEmail(userDTO.getEmail());
         newUser.setBirthDate(userDTO.getBirthDate());
         newUser.setPhoneNumber(userDTO.getPhoneNumber());
-        newUser.setAddress(address);
-        newUser.setMembershipCard(membershipCard);
+        newUser.setAddressId(address);
+        newUser.setMembershipCardId(membershipCard);
         newUser.setPassword(securityConfig.delegatingPasswordEncoder().encode(userDTO.getPassword()));
         newUser.setVerified(false);
         newUser.setVerificationToken(verificationToken);
@@ -323,14 +323,14 @@ public class UserService implements UserDetailsService {
         user.setLastName(userDTO.getLastName());
         user.setPassword(userDTO.getPassword());
         user.setEmail(userDTO.getEmail());
-        user.getAddress().setAddress(userDTO.getAddress());
-        user.getAddress().setCity(userDTO.getCity());
-        user.getAddress().setPostalCode(userDTO.getPostalCode());
-        user.getAddress().setDoorRingBellName(userDTO.getDoorRingBellName());
+        user.getAddressId().setStreet(userDTO.getStreet());
+        user.getAddressId().setCity(userDTO.getCity());
+        user.getAddressId().setPostalCode(userDTO.getPostalCode());
+        user.getAddressId().setDoorRingBellName(userDTO.getDoorRingBellName());
         user.setPhoneNumber(user.getPhoneNumber());
 
-        user.getAddress().setAddressNumber(userDTO.getAddressNumber());
-        user.getAddress().setStoryLevel(userDTO.getStoryLevel());
+        user.getAddressId().setNumber(userDTO.getNumber());
+        user.getAddressId().setStoryLevel(userDTO.getStoryLevel());
 
 
         return ResponseEntity.ok(userDTO);

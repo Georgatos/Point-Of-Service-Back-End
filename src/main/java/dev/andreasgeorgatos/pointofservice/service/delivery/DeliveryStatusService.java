@@ -46,15 +46,15 @@ public class DeliveryStatusService {
 
     @Transactional
     public ResponseEntity<DeliveryStatus> createDeliveryStatus(DeliveryStatus deliveryStatus) {
-        Optional<Order> optionalOrder = orderRepository.findById(deliveryStatus.getOrder().getId());
-        Optional<OrderStatuses> optionalOrderStatus = orderStatusRepository.findById(deliveryStatus.getOrderStatus().getId());
+        Optional<Order> optionalOrder = orderRepository.findById(deliveryStatus.getOrderId().getId());
+        Optional<OrderStatuses> optionalOrderStatus = orderStatusRepository.findById(deliveryStatus.getOrderStatusId().getId());
 
         if (optionalOrder.isEmpty() || optionalOrderStatus.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
 
-        deliveryStatus.setOrder(optionalOrder.get());
-        deliveryStatus.setOrderStatus(optionalOrderStatus.get());
+        deliveryStatus.setOrderId(optionalOrder.get());
+        deliveryStatus.setOrderStatusId(optionalOrderStatus.get());
 
         return ResponseEntity.ok(deliveryStatusRepository.save(deliveryStatus));
     }
@@ -62,8 +62,8 @@ public class DeliveryStatusService {
     @Transactional
     public ResponseEntity<DeliveryStatus> editDeliveryStatusById(Long id, DeliveryStatus deliveryStatus) {
         Optional<DeliveryStatus> optionalDeliveryStatus = deliveryStatusRepository.findById(id);
-        Optional<Order> optionalOrder = orderRepository.findById(deliveryStatus.getOrder().getId());
-        Optional<OrderStatuses> optionalOrderStatus = orderStatusRepository.findById(deliveryStatus.getOrderStatus().getId());
+        Optional<Order> optionalOrder = orderRepository.findById(deliveryStatus.getOrderId().getId());
+        Optional<OrderStatuses> optionalOrderStatus = orderStatusRepository.findById(deliveryStatus.getOrderStatusId().getId());
 
         if (optionalDeliveryStatus.isPresent()) {
             DeliveryStatus oldDeliveryStatus = optionalDeliveryStatus.get();
@@ -73,8 +73,8 @@ public class DeliveryStatusService {
             }
 
             oldDeliveryStatus.setDeliveryDate(deliveryStatus.getDeliveryDate());
-            oldDeliveryStatus.setOrderStatus(optionalOrderStatus.get());
-            oldDeliveryStatus.setOrder(optionalOrder.get());
+            oldDeliveryStatus.setOrderStatusId(optionalOrderStatus.get());
+            oldDeliveryStatus.setOrderId(optionalOrder.get());
 
             DeliveryStatus savedDeliveryHistory = deliveryStatusRepository.save(oldDeliveryStatus);
 

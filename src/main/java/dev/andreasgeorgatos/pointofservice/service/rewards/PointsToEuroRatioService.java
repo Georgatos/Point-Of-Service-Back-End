@@ -51,8 +51,7 @@ public class PointsToEuroRatioService {
 
         PointsToEuroRatio foundPointsToEuroRatio = optionalPointsToEuroRatio.get();
 
-        foundPointsToEuroRatio.setRealLifeMoney(pointsToEuroRatio.getRealLifeMoney());
-        foundPointsToEuroRatio.setPointsWorth(pointsToEuroRatio.getPointsWorth());
+        foundPointsToEuroRatio.setPointsPerEuro(pointsToEuroRatio.getPointsPerEuro());
 
 
         pointsToEuroRatioRepository.save(foundPointsToEuroRatio);

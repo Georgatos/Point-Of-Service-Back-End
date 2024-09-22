@@ -26,7 +26,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "order_status_id")
-    private OrderStatuses orderStatusid;
+    private OrderStatuses orderStatusId;
 
     @ManyToOne
     @JoinColumn(name = "order_types_id")

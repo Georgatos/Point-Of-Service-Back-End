@@ -52,7 +52,7 @@ public class ServerAssignmentService {
             oldServerAssignment.setAssignmentDate(serverAssignment.getAssignmentDate());
             oldServerAssignment.setStatus(serverAssignment.getStatus());
             oldServerAssignment.setTableId(serverAssignment.getTableId());
-            oldServerAssignment.setServerId(serverAssignment.getServerId());
+            oldServerAssignment.setUserId(serverAssignment.getUserId());
 
             return ResponseEntity.ok(serverAssignmentRepository.save(oldServerAssignment));
         }
