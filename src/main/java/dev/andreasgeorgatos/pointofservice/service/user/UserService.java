@@ -1,5 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.service.user;
 
+import dev.andreasgeorgatos.pointofservice.UtilClass;
 import dev.andreasgeorgatos.pointofservice.configuration.SecurityConfig;
 import dev.andreasgeorgatos.pointofservice.dto.users.EmployeeDTO;
 import dev.andreasgeorgatos.pointofservice.dto.users.UserDTO;
@@ -53,41 +54,6 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public ResponseEntity<?> getAllEmployees() {
-        Optional<List<Object[]>> optionalEmployees = userRepository.getAllEmployees();
-
-        if (optionalEmployees.isEmpty() || optionalEmployees.get().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Map<Long, EmployeeDTO> employeeMap = new HashMap<>();
-
-        for (Object[] result : optionalEmployees.get()) {
-            Long userId = (Long) result[0];
-            String firstName = (String) result[1];
-            String lastName = (String) result[2];
-            String imageUrl = (String) result[3];
-            String userName = (String) result[4];
-            String role = (String) result[5];
-
-            EmployeeDTO employeeDTO = employeeMap.get(userId);
-
-            if (employeeDTO == null) {
-                employeeDTO = new EmployeeDTO();
-                employeeDTO.setUserId(userId);
-                employeeDTO.setFirstName(firstName);
-                employeeDTO.setLastName(lastName);
-                employeeDTO.setImageUrl(imageUrl);
-                employeeDTO.setUserName(userName);
-                employeeDTO.setRoles(new ArrayList<>());
-                employeeMap.put(userId, employeeDTO);
-            }
-
-            employeeDTO.getRoles().add(role);
-        }
-        return ResponseEntity.ok(employeeMap);
-    }
-
     public ResponseEntity<?> getUserDTO(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
 
@@ -97,24 +63,10 @@ public class UserService implements UserDetailsService {
 
         User user = optionalUser.get();
 
-        UserDTO userDTO = new UserDTO();
-
-        userDTO.setUserName(user.getUserName());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setLastName(user.getLastName());
-        userDTO.setPassword("This is classified information.");
-        userDTO.setEmail(user.getEmail());
-        userDTO.setCity(user.getAddressId().getCity());
-        userDTO.setStreet(user.getAddressId().getStreet());
-        userDTO.setPostalCode(user.getAddressId().getPostalCode());
-        userDTO.setDoorRingBellName(user.getAddressId().getPostalCode());
-        userDTO.setNumber(user.getAddressId().getNumber());
-        userDTO.setStoryLevel(user.getAddressId().getStoryLevel());
-        userDTO.setPhoneNumber(user.getPhoneNumber());
-        userDTO.setBirthDate(user.getBirthDate());
-
+        UserDTO userDTO = UtilClass.convertUserToUserDTO(user);
         return ResponseEntity.ok(userDTO);
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
@@ -182,7 +134,7 @@ public class UserService implements UserDetailsService {
             membershipCard = optionalMembershipCard.get();
         }
 
-        Address address = addressService.createAddress(new Address(userDTO.getCity(), userDTO.getStreet(), userDTO.getNumber(), userDTO.getPostalCode(), userDTO.getStoryLevel(), userDTO.getDoorRingBellName())).getBody();
+        Address address = addressService.createAddress(new Address(userDTO.getCountry(), userDTO.getCity(), userDTO.getStreet(), userDTO.getNumber(), userDTO.getPostalCode(), userDTO.getStoryLevel(), userDTO.getDoorRingBellName())).getBody();
 
         if (address == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The address is empty, please specify.");

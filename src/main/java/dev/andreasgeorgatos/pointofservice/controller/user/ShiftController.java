@@ -1,5 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.controller.user;
 
+import dev.andreasgeorgatos.pointofservice.dto.users.ShiftDTO;
 import dev.andreasgeorgatos.pointofservice.model.user.Shift;
 import dev.andreasgeorgatos.pointofservice.service.user.ShiftService;
 import jakarta.validation.Valid;
@@ -34,12 +35,12 @@ public class ShiftController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createShift(@Valid @RequestBody Shift shift, BindingResult bindingResult) {
+    public ResponseEntity<?> createShift(@Valid @RequestBody ShiftDTO shiftDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
         }
-        return shiftService.createShift(shift);
+        return shiftService.createShift(shiftDTO);
     }
 
     @PutMapping("/{id}")

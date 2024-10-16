@@ -24,6 +24,7 @@ public class ShiftLog {
     @JoinColumn(name = "performed_by")
     private User performedBy;
 
+
     @Column(name = "method")
     private String method;
 

@@ -45,7 +45,6 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/user-type").denyAll();
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/users/ getAllEmployees").hasAnyRole("MANAGER", "ADMIN");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/login").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/forgotPassword").permitAll();
@@ -54,6 +53,11 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/verify").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/users/{id}").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/users/{id}").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
+
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/employees-controller").hasAnyRole("MANAGER", "ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/employees-controller/{id}").hasAnyRole("MANAGER", "ADMIN");
+
+
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/item").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/item/{id}").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
@@ -134,7 +138,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/referral-source/{id}").hasAnyRole("MANAGER", "ADMIN");
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/points-used").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
-                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-used/{id}").hasAnyRole("USER", "EMPLOYEE", "MANAGER", "ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/points-used/{id}").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/points-used").hasAnyRole("CUSTOMER", "COOK", "COOK_HELPER", "SERVER", "MANAGER", "ADMIN", "SYSTEM");
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/points-used/{id}").hasAnyRole("MANAGER", "ADMIN");
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/points-used/{id}").hasAnyRole("MANAGER", "ADMIN");

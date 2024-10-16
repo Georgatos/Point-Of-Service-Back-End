@@ -47,7 +47,8 @@ public class Address {
     @NotBlank(message = "You must specify the name of your door ring bell.")
     private String doorRingBellName;
 
-    public Address(String city, String street, String number, String postalCode, long storyLevel, String doorRingBellName) {
+    public Address(String country, String city, String street, String number, String postalCode, long storyLevel, String doorRingBellName) {
+        this.country = country;
         this.city = city;
         this.street = street;
         this.number = number;

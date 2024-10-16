@@ -1,7 +1,8 @@
 package dev.andreasgeorgatos.pointofservice.controller.user;
 
-import dev.andreasgeorgatos.pointofservice.dto.users.*;
 import dev.andreasgeorgatos.pointofservice.configuration.JWTUtil;
+import dev.andreasgeorgatos.pointofservice.dto.users.*;
+import dev.andreasgeorgatos.pointofservice.service.user.EmployeesService;
 import dev.andreasgeorgatos.pointofservice.service.user.POSUser;
 import dev.andreasgeorgatos.pointofservice.service.user.UserService;
 import jakarta.validation.Valid;
@@ -30,11 +31,6 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
-
-    @GetMapping("/getAllEmployees")
-    public ResponseEntity<?> getAllEmployees() {
-        return userService.getAllEmployees();
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
@@ -71,8 +67,10 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        if (userService.registerUser(userDTO).getStatusCode() != HttpStatus.CREATED) {
-            return ResponseEntity.badRequest().body("Failed to create the user.");
+        ResponseEntity<?> response = userService.registerUser(userDTO);
+
+        if (response.getStatusCode() != HttpStatus.CREATED) {
+            return ResponseEntity.badRequest().body("Failed to create the user\nReason: " + response.getBody());
         }
 
         POSUser foundUser = (POSUser) userService.loadUserByUsername(userDTO.getUserName());
@@ -97,8 +95,6 @@ public class UserController {
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@Valid @RequestBody VerificationCodeDTO verificationCodeDTO, BindingResult bindingResult) {
-        System.out.println(verificationCodeDTO.getEmail());
-        System.out.println(verificationCodeDTO.getVerificationCode());
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             return ResponseEntity.badRequest().body(errors);
@@ -145,7 +141,6 @@ public class UserController {
         POSUser user = (POSUser) userService.loadUserByUsername(userNameDTO.getUserName());
 
         if (user == null) {
-            System.out.println("The user is null");
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user.getAuthorities());
