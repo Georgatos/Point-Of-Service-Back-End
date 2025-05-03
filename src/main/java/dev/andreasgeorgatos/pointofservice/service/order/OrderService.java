@@ -72,6 +72,10 @@ public class OrderService {
 
     @Transactional
     public ResponseEntity<Order> createOrder(Order order) {
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        
         Optional<OrderType> orderType = orderTypeRepository.findById(order.getOrderTypeId().getId());
         Optional<OrderStatuses> orderStatus = orderStatusRepository.findById(order.getOrderStatusId().getId());
 

@@ -3,6 +3,7 @@ package dev.andreasgeorgatos.pointofservice.controller.orders;
 
 import dev.andreasgeorgatos.pointofservice.model.order.OrderStatuses;
 import dev.andreasgeorgatos.pointofservice.service.order.OrderStatusService;
+import dev.andreasgeorgatos.pointofservice.utils.ValidationUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -45,14 +46,8 @@ public class OrderStatusController {
     @PutMapping("/{id}")
     public ResponseEntity<?> editOrderStatusById(@Valid @PathVariable Long id, @RequestBody OrderStatuses orderStatus, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult
-                    .getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(ValidationUtils.getValidationErrors(bindingResult));
         }
-
         return orderStatusService.editOrderStatusById(id, orderStatus);
     }
 

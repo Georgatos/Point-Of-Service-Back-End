@@ -3,6 +3,7 @@ package dev.andreasgeorgatos.pointofservice.controller.orders;
 import dev.andreasgeorgatos.pointofservice.dto.tables.TableNumberDTO;
 import dev.andreasgeorgatos.pointofservice.model.order.DineInTable;
 import dev.andreasgeorgatos.pointofservice.service.order.DineInTableService;
+import dev.andreasgeorgatos.pointofservice.utils.ValidationUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -57,29 +58,16 @@ public class DineInTableController {
     @PutMapping("/{id}")
     public ResponseEntity<?> editDineInTableById(@Valid @PathVariable Long id, @RequestBody DineInTable dineInTable, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult
-                    .getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(ValidationUtils.getValidationErrors(bindingResult));
         }
-
-
         return dineInTableService.editOrderHistoryById(id, dineInTable);
     }
 
     @PostMapping("/deleteTableByNumber")
     public ResponseEntity<?> deleteDineInTableByTableNumber(@Valid @RequestBody TableNumberDTO tableNumberDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult
-                    .getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(ValidationUtils.getValidationErrors(bindingResult));
         }
-
         DineInTable table = dineInTableService.getDineInTableByTableNumber(tableNumberDTO.getTableNumber()).getBody();
 
         if (table == null) {

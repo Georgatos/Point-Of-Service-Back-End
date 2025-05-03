@@ -1,6 +1,6 @@
 package dev.andreasgeorgatos.pointofservice.service.user;
 
-import dev.andreasgeorgatos.pointofservice.UtilClass;
+import dev.andreasgeorgatos.pointofservice.utils.UtilClass;
 import dev.andreasgeorgatos.pointofservice.dto.users.EmployeeDTO;
 import dev.andreasgeorgatos.pointofservice.dto.users.UserDTO;
 import dev.andreasgeorgatos.pointofservice.model.user.User;

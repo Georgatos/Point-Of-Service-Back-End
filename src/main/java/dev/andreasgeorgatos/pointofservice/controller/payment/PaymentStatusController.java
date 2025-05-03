@@ -2,6 +2,7 @@ package dev.andreasgeorgatos.pointofservice.controller.payment;
 
 import dev.andreasgeorgatos.pointofservice.model.payment.PaymentStatuses;
 import dev.andreasgeorgatos.pointofservice.service.payment.PaymentStatusService;
+import dev.andreasgeorgatos.pointofservice.utils.ValidationUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -35,15 +36,8 @@ public class PaymentStatusController {
     @PostMapping
     public ResponseEntity<?> createPaymentMethod(@Valid @RequestBody PaymentStatuses paymentStatus, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult
-                    .getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(ValidationUtils.getValidationErrors(bindingResult));
         }
-
         return paymentStatusService.createPaymentStatus(paymentStatus);
     }
 

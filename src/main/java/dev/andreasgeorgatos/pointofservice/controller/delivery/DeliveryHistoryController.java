@@ -2,6 +2,7 @@ package dev.andreasgeorgatos.pointofservice.controller.delivery;
 
 import dev.andreasgeorgatos.pointofservice.model.delivery.DeliveryHistory;
 import dev.andreasgeorgatos.pointofservice.service.delivery.DeliveryHistoryService;
+import dev.andreasgeorgatos.pointofservice.utils.ValidationUtils;
 import jakarta.validation.Valid;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
@@ -43,12 +44,7 @@ public class DeliveryHistoryController {
     @PutMapping("/{id}")
     public ResponseEntity<?> editOrderById(@Valid @PathVariable Long id, @RequestBody DeliveryHistory deliveryHistory, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult
-                    .getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(ValidationUtils.getValidationErrors(bindingResult));
         }
 
         return deliveryHistoryService.editDeliveryHistoryById(id, deliveryHistory);

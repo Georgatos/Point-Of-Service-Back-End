@@ -67,24 +67,24 @@ public class DineInTableService {
         return ResponseEntity.ok(dineInTableRepository.save(table));
     }
 
-    @Transactional
-    public ResponseEntity<DineInTable> editOrderHistoryById(long id, DineInTable dineInTable) {
-        Optional<DineInTable> optionalDineInTable = dineInTableRepository.findById(id);
+   @Transactional
+   public ResponseEntity<DineInTable> editOrderHistoryById(long id, DineInTable dineInTable) {
+       Optional<DineInTable> optionalDineInTable = dineInTableRepository.findById(id);
 
-        if (optionalDineInTable.isPresent()) {
-            DineInTable oldDineInTable = optionalDineInTable.get();
+       if (optionalDineInTable.isPresent()) {
+           DineInTable oldDineInTable = optionalDineInTable.get();
 
-            oldDineInTable.setTableNumber(dineInTable.getTableNumber());
-            oldDineInTable.setCreatedAt(dineInTable.getCreatedAt());
-            oldDineInTable.setUpdatedAt(dineInTable.getUpdatedAt());
-            oldDineInTable.setCreatedAt(dineInTable.getCreatedAt());
+           oldDineInTable.setTableNumber(dineInTable.getTableNumber());
+           oldDineInTable.setCreatedAt(dineInTable.getCreatedAt());
+           oldDineInTable.setUpdatedAt(dineInTable.getUpdatedAt());
+           oldDineInTable.setStatus(dineInTable.getStatus());
 
-            DineInTable savedOrderHistory = dineInTableRepository.save(oldDineInTable);
+           DineInTable savedOrderHistory = dineInTableRepository.save(oldDineInTable);
 
-            return ResponseEntity.ok(savedOrderHistory);
-        }
-        return ResponseEntity.notFound().build();
-    }
+           return ResponseEntity.ok(savedOrderHistory);
+       }
+       return ResponseEntity.notFound().build();
+   }
 
     @Transactional
     public ResponseEntity<DineInTable> deleteDineInTableById(long id) {

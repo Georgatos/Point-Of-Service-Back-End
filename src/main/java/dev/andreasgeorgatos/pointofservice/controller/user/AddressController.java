@@ -2,6 +2,7 @@ package dev.andreasgeorgatos.pointofservice.controller.user;
 
 import dev.andreasgeorgatos.pointofservice.model.address.Address;
 import dev.andreasgeorgatos.pointofservice.service.user.AddressService;
+import dev.andreasgeorgatos.pointofservice.utils.ValidationUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -36,13 +37,7 @@ public class AddressController {
     @PostMapping()
     public ResponseEntity<?> createAddress(@Valid @RequestBody Address address, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult
-                    .getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(ValidationUtils.getValidationErrors(bindingResult));
         }
 
         return addressService.createAddress(address);

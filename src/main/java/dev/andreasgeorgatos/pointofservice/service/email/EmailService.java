@@ -15,7 +15,8 @@ public class EmailService {
 
 
     @Autowired
-    public EmailService(JavaMailSender javaMailSender) {
+    public EmailService(JavaMailSender javaMailSender)
+    {
         this.javaMailSender = javaMailSender;
     }
 
@@ -44,7 +45,11 @@ public class EmailService {
         message.setFrom(fromEmail);
         message.setTo(email);
         message.setSubject("Reset your password");
-        message.setText("You are getting this e-mail because someone has requested a reset password, if you are not one who have requested it, please take the appropriate measures, otherwise, you can use this token: " + token + " to reset your password.");
+        // Better approach - use a link
+        message.setText("You are getting this e-mail because someone has requested a reset password. "
+            + "If you did not request this, please ignore this email. "
+            + "Otherwise, please click the following link to reset your password: "
+            + "https://yourapp.com/reset-password?token=" + token);
         javaMailSender.send(message);
     }
 

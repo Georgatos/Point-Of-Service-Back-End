@@ -1,4 +1,4 @@
-package dev.andreasgeorgatos.pointofservice;
+package dev.andreasgeorgatos.pointofservice.utils;
 
 import dev.andreasgeorgatos.pointofservice.dto.users.UserDTO;
 import dev.andreasgeorgatos.pointofservice.model.user.User;

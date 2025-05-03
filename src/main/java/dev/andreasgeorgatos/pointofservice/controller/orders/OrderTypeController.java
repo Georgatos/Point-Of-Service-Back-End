@@ -2,6 +2,7 @@ package dev.andreasgeorgatos.pointofservice.controller.orders;
 
 import dev.andreasgeorgatos.pointofservice.model.order.OrderType;
 import dev.andreasgeorgatos.pointofservice.service.order.OrderTypeService;
+import dev.andreasgeorgatos.pointofservice.utils.ValidationUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -45,14 +46,8 @@ public class OrderTypeController {
     @PutMapping("/{id}")
     public ResponseEntity<?> editOrderTypeById(@Valid @PathVariable Long id, @RequestBody OrderType orderType, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult
-                    .getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(ValidationUtils.getValidationErrors(bindingResult));
         }
-
         return orderTypeService.editOrderTypeById(id, orderType);
     }
 

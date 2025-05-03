@@ -64,22 +64,23 @@ public class OrderItemService {
         return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
-    @Transactional
-    public ResponseEntity<OrderItem> createOrderItem(OrderItem orderItem) {
-        Optional<Item> foundItem = itemRepository.findById(orderItem.getItem().getId());
+   @Transactional
+   public ResponseEntity<OrderItem> createOrderItem(OrderItem orderItem) {
+       Optional<Item> foundItem = itemRepository.findById(orderItem.getItem().getId());
 
-        if (foundItem.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+       if (foundItem.isEmpty()) {
+           return ResponseEntity.notFound().build();
+       }
 
-        Item item = foundItem.get();
+       Item item = foundItem.get();
+       orderItem.setItem(item);
+       orderItem.setCreatedAt(LocalDate.now());
+       orderItem.setUpdated_at(LocalDate.now());
 
-        orderItem.setItem(item);
+       orderItemRepository.save(orderItem);
 
-        orderItemRepository.save(orderItem);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderItem);
-    }
+       return ResponseEntity.status(HttpStatus.CREATED).body(orderItem);
+   }
 
 
     @Transactional
