@@ -5,7 +5,10 @@ import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class ValidationUtils {
+public final class ValidationUtils { // Added final
+
+    private ValidationUtils() { // Added private constructor
+    }
 
     /**
      * Extracts error messages from BindingResult.
@@ -18,6 +21,6 @@ public class ValidationUtils {
                 .getAllErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .toList();
+                .toList(); // Assumes Java 16+ for .toList()
     }
 }

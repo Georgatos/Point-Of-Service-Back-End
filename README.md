@@ -31,6 +31,20 @@
 - **Responsive Interface**: Optimized for use on both desktops and tablets, providing a smooth user experience.
 - **Customizable Themes**: Personalize the look and feel of the interface to align with your business branding.
 
+## Architecture
+
+The PointOfService application follows a layered architecture to ensure separation of concerns, maintainability, and scalability. The main layers are:
+
+-   **Presentation Layer (Controllers):** This layer is responsible for handling incoming HTTP requests from clients. Controllers validate user input, often using Data Transfer Objects (DTOs), and then delegate the business logic processing to the appropriate services in the service layer. They then format the response to be sent back to the client.
+
+-   **Service Layer (Services):** This layer contains the core business logic of the application. Services orchestrate operations, manage transactions, and coordinate calls to various repositories to fetch or persist data. They are designed to be independent of the presentation layer, allowing for different interfaces to reuse the same business logic.
+
+-   **Data Access Layer (Repositories):** This layer is responsible for all data persistence and interaction with the database. It typically uses Spring Data JPA to define repository interfaces that provide CRUD (Create, Read, Update, Delete) operations and custom queries for entities.
+
+-   **Domain Model (Entities/Models):** These are the core business objects of the application (e.g., Item, Order, User). They represent the structure of the data and are typically mapped to database tables using JPA annotations.
+
+-   **DTOs (Data Transfer Objects):** DTOs are simple objects used to transfer data between layers, particularly between the presentation layer (controllers) and the service layer. They help in decoupling the API's request/response structure from the internal domain model and can be tailored for specific use cases, preventing over-exposure of domain entities.
+
 ## Roadmap
 - **Multi-language Support**: Plans to add support for multiple languages to cater to a broader audience.
 - **Mobile Application**: Development of a companion mobile app for managing operations on the go.
