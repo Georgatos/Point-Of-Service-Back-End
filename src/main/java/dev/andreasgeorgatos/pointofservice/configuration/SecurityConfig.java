@@ -21,6 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration class for Spring Security.
+ * Sets up security filters, password encoding, and HTTP security rules.
+ * It defines role-based access control for various API endpoints.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -28,6 +33,7 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
 
     // Role Constants
+    // These constants define the user roles used throughout the application for authorization.
     private static final String ROLE_CUSTOMER = "CUSTOMER";
     private static final String ROLE_COOK = "COOK";
     private static final String ROLE_COOK_HELPER = "COOK_HELPER";
@@ -35,36 +41,53 @@ public class SecurityConfig {
     private static final String ROLE_MANAGER = "MANAGER";
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_SYSTEM = "SYSTEM";
-    private static final String ROLE_USER = "USER"; // General user role, seems less specific than CUSTOMER
+    private static final String ROLE_USER = "USER"; // General user role, potentially for basic authenticated access not covered by specific roles.
 
     // Common Role Combinations
+    // These arrays group roles for easier application in security rules.
     private static final String[] ROLES_ALL_STAFF_AND_CUSTOMER = {
             ROLE_CUSTOMER, ROLE_COOK, ROLE_COOK_HELPER, ROLE_SERVER, ROLE_MANAGER, ROLE_ADMIN, ROLE_SYSTEM
     };
     private static final String[] ROLES_MANAGEMENT_STAFF = {ROLE_MANAGER, ROLE_ADMIN};
-    private static final String[] ROLES_USER_ADMIN = {ROLE_USER, ROLE_ADMIN};
+    private static final String[] ROLES_USER_ADMIN = {ROLE_USER, ROLE_ADMIN}; // Typically for operations manageable by a user on their own data or by an admin.
     private static final String[] ROLES_USER_MANAGER_ADMIN = {ROLE_USER, ROLE_MANAGER, ROLE_ADMIN};
 
 
+    /**
+     * Constructs the SecurityConfig with necessary dependencies.
+     *
+     * @param jwtUtil Utility for handling JWT operations, used by the {@link TokenExtractionFilter}.
+     */
     @Autowired
     public SecurityConfig(JWTUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Configures the security filter chain for the application.
+     * This method defines how HTTP requests are secured, including CSRF protection,
+     * session management, HSTS headers, and authorization rules for various API endpoints.
+     * It also integrates a custom {@link TokenExtractionFilter} for JWT processing.
+     *
+     * @param http The {@link HttpSecurity} to configure.
+     * @return The configured {@link SecurityFilterChain}.
+     * @throws Exception If an error occurs during configuration.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Add HSTS header configuration
+        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection, common for stateless APIs
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
+                // Add HSTS header configuration for enhanced security
                 .headers(headers -> headers
                         .httpStrictTransportSecurity(hsts -> hsts
-                                .includeSubDomains(true)
-                                .maxAgeInSeconds(31536000) // 1 year
+                                .includeSubDomains(true) // Apply HSTS to all subdomains
+                                .maxAgeInSeconds(31536000) // 1 year in seconds
                         )
                 )
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/user-type").denyAll();
+                    // Define endpoint-specific authorization rules
+                    auth.requestMatchers("/api/v1/user-type").denyAll(); // Explicitly deny access to this endpoint
 
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").hasAnyRole(ROLES_ALL_STAFF_AND_CUSTOMER);
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users/register").permitAll();
@@ -195,21 +218,29 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.PUT, "/api/v1/order/DineIn/{id}").hasAnyRole(ROLES_MANAGEMENT_STAFF);
                     auth.requestMatchers(HttpMethod.DELETE, "/api/v1/order/DineIn/{id}").hasAnyRole(ROLES_MANAGEMENT_STAFF);
                 })
-                .addFilterBefore(new TokenExtractionFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults()); // Chain build after this
+                .addFilterBefore(new TokenExtractionFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class) // Add custom JWT filter
+                .httpBasic(Customizer.withDefaults()); // Enable HTTP Basic authentication as a fallback or for specific use cases
         return http.build();
     }
 
+    /**
+     * Creates a {@link PasswordEncoder} bean that supports multiple encoding algorithms.
+     * This setup uses a {@link DelegatingPasswordEncoder} to allow for different password
+     * encoding strategies, with "bcrypt" as the default.
+     * "scrypt" is also configured as an available encoder.
+     *
+     * @return A {@link DelegatingPasswordEncoder} instance.
+     */
     @Bean
     public PasswordEncoder delegatingPasswordEncoder() {
         Map<String, PasswordEncoder> encoders = new HashMap<>();
-
         encoders.put("bcrypt", new BCryptPasswordEncoder());
-        encoders.put("scrypt", new SCryptPasswordEncoder(3, 8, 1, 32, 16));
+        // Example: SCryptPasswordEncoder(cpuCost, memoryCost, parallelization, keyLength, saltLength)
+        encoders.put("scrypt", new SCryptPasswordEncoder(16384, 8, 1, 32, 64)); // Adjusted parameters for scrypt
 
-        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("bcrypt", encoders);
-
-        passwordEncoder.setDefaultPasswordEncoderForMatches(encoders.get("bcrypt"));
+        String defaultEncoderId = "bcrypt";
+        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(defaultEncoderId, encoders);
+        passwordEncoder.setDefaultPasswordEncoderForMatches(encoders.get(defaultEncoderId));
 
         return passwordEncoder;
     }
