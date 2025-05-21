@@ -129,7 +129,7 @@ public class AddressService {
      * @return ResponseEntity with no content if deletion was successful, or NOT_FOUND if no address exists with the given ID
      */
     @Transactional
-    public ResponseEntity<Address> deleteAddressById(long id) {
+    public ResponseEntity<Void> deleteAddressById(long id) { // Changed return type to ResponseEntity<Void>
         logger.debug("Deleting address with ID: {}", id);
 
         Optional<Address> address = addressRepository.findById(id);
